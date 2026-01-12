@@ -66,13 +66,13 @@ export const fieldDetector = (value, _allValues) => {
 // Descriptions for detected patterns
 export const detectionDescriptions = {
   empty_value: 'Empty',
-  leading_space: 'Leading space',
-  trailing_space: 'Trailing space',
-  middle_space: 'Middle space',
-  non_alphanumeric: 'Non-alphanumeric',
+  leading_space: '_Space',
+  trailing_space: 'Space_',
+  middle_space: 'Sp_ce',
+  non_alphanumeric: 'Non-alpha',
   non_ascii: 'Non-ASCII',
   non_printable: 'Non-printable',
   contains_html: 'HTML',
   contains_xss: 'XSS',
-  contains_sql_injection: 'SQL injection'
+  contains_sql_injection: 'SQL'
 }

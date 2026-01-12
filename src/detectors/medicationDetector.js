@@ -48,8 +48,8 @@ export const medicationDetector = (value, _allValues) => {
 // Descriptions for detected patterns
 export const detectionDescriptions = {
   nominal_value: "Nominal",
-  invalid_value: "Invalid value",
-  boundary_length_min: "Min Boundary",
-  boundary_length_max: "Max Boundary",
-  above_max: "Above Max",
+  invalid_value: "Invalid",
+  boundary_length_min: "Min",
+  boundary_length_max: "Max",
+  above_max: "Max+",
 };

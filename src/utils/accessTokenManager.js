@@ -128,12 +128,14 @@ export function validateAccessWindow(date, time, duration) {
     }
 
     const timeRemainingMs = endDateTime - now
+    const timeRemainingSeconds = Math.floor(timeRemainingMs / 1000) // in seconds
     const timeRemaining = Math.ceil(timeRemainingMs / (1000 * 60)) // in minutes
 
     return {
       isValid: true,
       message: `Access valid. Time remaining: ${timeRemaining} minute(s).`,
-      timeRemaining
+      timeRemaining,
+      timeRemainingSeconds
     }
   } catch (error) {
     return {

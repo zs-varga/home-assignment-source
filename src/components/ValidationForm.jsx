@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './ValidationForm.css'
 import FieldBadges from './Badges'
 import { useSyncedSessionStorage } from '../hooks/useSyncedSessionStorage'
-import { monitorStorageKey, saveBackup, setTamperingCallback, setMultiWindowCallback, initializeStorageChangeDetection, hasExistingStorageData } from '../utils/storageChangeDetector'
+import { monitorStorageKey, saveBackup, setTamperingCallback, setMultiWindowCallback, initializeStorageChangeDetection } from '../utils/storageChangeDetector'
 import { validateMedication } from '../validators/medicationValidator'
 import { validateWeight } from '../validators/weightValidator'
 import { validateDateOfBirth } from '../validators/dateOfBirthValidator'
@@ -32,10 +32,7 @@ function ValidationForm({ accessValidation }) {
   const [previousAccomplishments, setPreviousAccomplishments] = useSyncedSessionStorage('detector_previous_accomplishments', {})
   const [formAccomplishments, setFormAccomplishments] = useSyncedSessionStorage('detector_form_accomplishments', [])
   const [storageWasTampered, setStorageWasTampered] = useState(false)
-  const [multiWindowDetected, setMultiWindowDetected] = useState(() => {
-    // Check if storage has existing data on initial load (indicates other tabs are open)
-    return hasExistingStorageData()
-  })
+  const [multiWindowDetected, setMultiWindowDetected] = useState(false)
   const [candidateEmail] = useState(() => {
     // Extract email from access token on mount
     const params = new URLSearchParams(window.location.search)
@@ -219,7 +216,7 @@ function ValidationForm({ accessValidation }) {
     <div className="form-wrapper">
       <form onSubmit={handleSubmit} className="validation-form">
         <fieldset>
-          <legend>Medication Information</legend>
+          <legend>Medication Prescription</legend>
 
           <div className="form-group">
             <label htmlFor="medication">Medication</label>
@@ -333,7 +330,7 @@ function ValidationForm({ accessValidation }) {
       </form>
 
       <div className="badges-panel">
-        <h3 className="badges-title">Accomplishments</h3>
+        <h3 className="badges-title">Already Covered</h3>
         <div className="all-badges">
           {['medication', 'dateOfBirth', 'weight', 'dosage', 'frequency'].map((fieldName) => (
             <div key={fieldName} className="field-accomplishment">
