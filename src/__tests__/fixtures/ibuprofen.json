@@ -1,0 +1,124 @@
+[
+  {
+    "name": "Ibuprofen - Below Min",
+    "values": {
+      "medication": "ibuprofen",
+      "dateOfBirth": [-150, 0, -1],
+      "weight": "4",
+      "dosage": "199",
+      "frequency": "0"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["ibuprofen_below_min"],
+      "weight": ["ibuprofen_below_min"],
+      "dosage": ["ibuprofen_below_min"],
+      "frequency": ["ibuprofen_below_min"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": ["Date of Birth must result in a realistic age between 0 and 150 years"],
+      "weight": [
+        "Weight must be at least 5",
+        "Ibuprofen requires weight greater than 5 kg"
+      ],
+      "dosage": [
+        "Dosage must be at least 200",
+        "Ibuprofen dosage must be at least 200 mg"
+      ],
+      "frequency": ["Frequency must be at least 1"]
+    }
+  },{
+    "name": "Ibuprofen - Boundary Min",
+    "values": {
+      "medication": "ibuprofen",
+      "dateOfBirth": [-150, 0, 0],
+      "weight": "5",
+      "dosage": "200",
+      "frequency": "1"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["ibuprofen_nominal", "ibuprofen_boundary_min"],
+      "weight": ["ibuprofen_nominal", "ibuprofen_boundary_min"],
+      "dosage": ["ibuprofen_nominal", "ibuprofen_boundary_min", "ibuprofen_total_boundary_max"],
+      "frequency": ["ibuprofen_nominal", "ibuprofen_boundary_min"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": [],
+      "weight": ["Ibuprofen requires weight greater than 5 kg"],
+      "dosage": ["Ibuprofen total dose must satisfy: dosage × frequency < weight × 40"],
+      "frequency": []
+    }
+  },{
+    "name": "Ibuprofen - Nominal",
+    "values": {
+      "medication": "ibuprofen",
+      "dateOfBirth": [0, -6, -1],
+      "weight": "6",
+      "dosage": "201",
+      "frequency": "2"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["ibuprofen_nominal"],
+      "weight": ["ibuprofen_nominal"],
+      "dosage": ["ibuprofen_total_above_max"],
+      "frequency": ["ibuprofen_nominal"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": [],
+      "weight": [],
+      "dosage": ["Ibuprofen total dose must satisfy: dosage × frequency < weight × 40"],
+      "frequency": []
+    }
+  },{
+    "name": "Ibuprofen - Boundary Max",
+    "values": {
+      "medication": "ibuprofen",
+      "dateOfBirth": [0, -6, 0],
+      "weight": "500",
+      "dosage": "800",
+      "frequency": "4"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["ibuprofen_nominal", "ibuprofen_boundary_max"],
+      "weight": ["ibuprofen_nominal", "ibuprofen_boundary_max"],
+      "dosage": ["ibuprofen_nominal", "ibuprofen_boundary_max"],
+      "frequency": ["ibuprofen_nominal", "ibuprofen_boundary_max"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": [],
+      "weight": [],
+      "dosage": [],
+      "frequency": []
+    }
+  },{
+    "name": "Ibuprofen - Above Max",
+    "values": {
+      "medication": "ibuprofen",
+      "dateOfBirth": [0, -6, 1],
+      "weight": "501",
+      "dosage": "801",
+      "frequency": "5"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["ibuprofen_above_max"],
+      "weight": ["ibuprofen_above_max"],
+      "dosage": ["ibuprofen_above_max"],
+      "frequency": ["ibuprofen_above_max"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": ["Infants (under 6 months old) cannot take ibuprofen"],
+      "weight": ["Weight must not exceed 500"],
+      "dosage": ["Ibuprofen dosage must not exceed 800 mg"],
+      "frequency": ["Ibuprofen frequency must be less than 5"]
+    }
+  }
+]

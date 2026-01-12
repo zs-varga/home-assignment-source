@@ -1,0 +1,256 @@
+[
+  {
+    "name": "Empty",
+    "values": {
+      "medication": "",
+      "dateOfBirth": "",
+      "weight": "",
+      "dosage": "",
+      "frequency": ""
+    },
+    "expectedDetections": {
+      "medication": ["empty_value"],
+      "dateOfBirth": ["empty_value"],
+      "weight": ["empty_value"],
+      "dosage": ["empty_value"],
+      "frequency": ["empty_value"]
+    },
+    "expectedValidationErrors": {
+      "medication": ["Medication is required"],
+      "dateOfBirth": ["Date of Birth is required"],
+      "weight": ["Weight is required"],
+      "dosage": ["Dosage is required"],
+      "frequency": ["Frequency is required"]
+    }
+  },
+  {
+    "name": "Below Min",
+    "values": {
+      "medication": "0",
+      "dateOfBirth": [-150, 0, -1],
+      "weight": "0",
+      "dosage": "0",
+      "frequency": "0"
+    },
+    "expectedDetections": {
+      "medication": ["boundary_length_min", "invalid_value"],
+      "dateOfBirth": ["below_min"],
+      "weight": ["below_min"],
+      "dosage": ["below_min"],
+      "frequency": ["below_min"]
+    },
+    "expectedValidationErrors": {
+      "medication": [
+        "Medication must be one of: placebo, aspirin, ibuprofen, paracetamol, naproxen"
+      ],
+      "dateOfBirth": [
+        "Date of Birth must result in a realistic age between 0 and 150 years"
+      ],
+      "weight": ["Weight must be at least 5"],
+      "dosage": ["Dosage must be at least 200"],
+      "frequency": ["Frequency must be at least 1"]
+    }
+  },
+  {
+    "name": "Min Boundary",
+    "values": {
+      "medication": "0",
+      "dateOfBirth": [-150, 0, 0],
+      "weight": "5",
+      "dosage": "200",
+      "frequency": "1"
+    },
+    "expectedDetections": {
+      "medication": ["boundary_length_min", "invalid_value"],
+      "dateOfBirth": ["boundary_min", "nominal_value"],
+      "weight": ["boundary_min", "nominal_value"],
+      "dosage": ["boundary_min", "nominal_value"],
+      "frequency": ["boundary_min", "nominal_value"]
+    },
+    "expectedValidationErrors": {
+      "medication": [
+        "Medication must be one of: placebo, aspirin, ibuprofen, paracetamol, naproxen"
+      ],
+      "dateOfBirth": [],
+      "weight": [],
+      "dosage": [],
+      "frequency": []
+    }
+  },
+  {
+    "name": "Max Boundary",
+    "values": {
+      "medication": "01234567890123456789",
+      "dateOfBirth": [0, 0, 0],
+      "weight": "500",
+      "dosage": "1000",
+      "frequency": "5"
+    },
+    "expectedDetections": {
+      "medication": ["boundary_length_max", "invalid_value"],
+      "dateOfBirth": ["boundary_max ", "nominal_value"],
+      "weight": ["boundary_max", "nominal_value"],
+      "dosage": ["boundary_max", "nominal_value"],
+      "frequency": ["boundary_max", "nominal_value"]
+    },
+    "expectedValidationErrors": {
+      "medication": [
+        "Medication must be one of: placebo, aspirin, ibuprofen, paracetamol, naproxen"
+      ],
+      "dateOfBirth": [],
+      "weight": [],
+      "dosage": [],
+      "frequency": []
+    }
+  },
+  {
+    "name": "Above Max",
+    "values": {
+      "medication": "012345678901234567890",
+      "dateOfBirth": [0, 0, 1],
+      "weight": "501",
+      "dosage": "1001",
+      "frequency": "6"
+    },
+    "expectedDetections": {
+      "medication": ["above_max", "invalid_value"],
+      "dateOfBirth": ["above_max"],
+      "weight": ["above_max"],
+      "dosage": ["above_max"],
+      "frequency": ["above_max"]
+    },
+    "expectedValidationErrors": {
+      "medication": [
+        "Medication must not exceed 20 characters",
+        "Medication must be one of: placebo, aspirin, ibuprofen, paracetamol, naproxen"
+      ],
+      "dateOfBirth": ["Date of Birth cannot be in the future"],
+      "weight": ["Weight must not exceed 500"],
+      "dosage": ["Dosage must not exceed 1000"],
+      "frequency": ["Frequency must not exceed 5"]
+    }
+  },
+  {
+    "name": "Nominal",
+    "values": {
+      "medication": "placebo",
+      "dateOfBirth": [0, 0, -1],
+      "weight": "6",
+      "dosage": "201",
+      "frequency": "2"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["nominal_value"],
+      "weight": ["nominal_value"],
+      "dosage": ["nominal_value"],
+      "frequency": ["nominal_value"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": [],
+      "weight": [],
+      "dosage": [],
+      "frequency": []
+    }
+  },
+  {
+    "name": "Non-alphanumeric",
+    "values": {
+      "medication": "&&&",
+      "dateOfBirth": "&",
+      "weight": "&",
+      "dosage": "&",
+      "frequency": "&"
+    },
+    "expectedDetections": {
+      "medication": ["non_alphanumeric", "invalid_value"],
+      "dateOfBirth": ["non_alphanumeric", "invalid_format"],
+      "weight": ["non_alphanumeric", "non_numeric"],
+      "dosage": ["non_alphanumeric", "non_numeric"],
+      "frequency": ["non_alphanumeric", "non_numeric"]
+    },
+    "expectedValidationErrors": {
+      "medication": ["Medication must be one of: placebo, aspirin, ibuprofen, paracetamol, naproxen"],
+      "dateOfBirth": ["Date of Birth must be in YYYY-MM-DD format"],
+      "weight": ["Weight must be a valid number"],
+      "dosage": ["Dosage must be a valid number"],
+      "frequency": ["Frequency must be a valid number"]
+    }
+  },
+  {
+    "name": "Spaces, Non-printable",
+    "values": {
+      "medication": " x \t x ",
+      "dateOfBirth": " x \t x ",
+      "weight": " x \t x ",
+      "dosage": " x \t x ",
+      "frequency": " x \t x "
+    },
+    "expectedDetections": {
+      "medication": ["non_printable", "non_alphanumeric", "leading_space", "trailing_space", "middle_space", "invalid_value"],
+      "dateOfBirth": ["non_printable", "non_alphanumeric", "leading_space", "trailing_space", "middle_space", "invalid_format"],
+      "weight": ["non_printable", "non_alphanumeric", "leading_space", "trailing_space", "middle_space", "non_numeric"],
+      "dosage": ["non_printable", "non_alphanumeric", "leading_space", "trailing_space", "middle_space", "non_numeric"],
+      "frequency": ["non_printable", "non_alphanumeric", "leading_space", "trailing_space", "middle_space", "non_numeric"]
+    },
+    "expectedValidationErrors": {
+      "medication": ["Medication must be one of: placebo, aspirin, ibuprofen, paracetamol, naproxen"],
+      "dateOfBirth": ["Date of Birth must be in YYYY-MM-DD format"],
+      "weight": ["Weight must be a valid number"],
+      "dosage": ["Dosage must be a valid number"],
+      "frequency": ["Frequency must be a valid number"]
+    }
+  },
+  {
+    "name": "HTML, XSS, SQL Injection",
+    "values": {
+      "medication": ";<script>alert('SELECT')</script>",
+      "dateOfBirth": ";<script>alert('SELECT')</script>",
+      "weight": ";<script>alert('SELECT')</script>",
+      "dosage": ";<script>alert('SELECT')</script>",
+      "frequency": ";<script>alert('SELECT')</script>"
+    },
+    "expectedDetections": {
+      "medication": ["non_alphanumeric", "invalid_value", "above_max", "contains_html", "contains_xss", "contains_sql_injection"],
+      "dateOfBirth": ["non_alphanumeric",  "contains_html", "contains_xss", "contains_sql_injection", "invalid_format"],
+      "weight": ["non_alphanumeric", "contains_html", "contains_xss", "contains_sql_injection", "non_numeric"],
+      "dosage": ["non_alphanumeric", "contains_html", "contains_xss", "contains_sql_injection", "non_numeric"],
+      "frequency": ["non_alphanumeric", "contains_html", "contains_xss", "contains_sql_injection", "non_numeric"]
+    },
+    "expectedValidationErrors": {
+      "medication": [
+        "Medication must not exceed 20 characters",
+        "Medication must be one of: placebo, aspirin, ibuprofen, paracetamol, naproxen"
+      ],
+      "dateOfBirth": ["Date of Birth must be in YYYY-MM-DD format"],
+      "weight": ["Weight must be a valid number"],
+      "dosage": ["Dosage must be a valid number"],
+      "frequency": ["Frequency must be a valid number"]
+    }
+  },
+  {
+    "name": "Plus signs",
+    "values": {
+      "medication": "placebo",
+      "dateOfBirth": "2000-01-01",
+      "weight": "+70",
+      "dosage": "+500",
+      "frequency": "+2"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["nominal_value"],
+      "weight": ["nominal_value", "starts_with_plus", "non_alphanumeric"],
+      "dosage": ["nominal_value", "starts_with_plus", "non_alphanumeric"],
+      "frequency": ["nominal_value", "starts_with_plus", "non_alphanumeric"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": [],
+      "weight": [],
+      "dosage": [],
+      "frequency": []
+    }
+  }
+]

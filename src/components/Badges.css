@@ -1,0 +1,44 @@
+.field-badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+  max-width: 100%;
+}
+
+.badge-text {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.badge-text.badge-new {
+  animation: badgeFlash 0.6s ease-in-out;
+}
+
+@keyframes badgeFlash {
+  0% {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: none;
+  }
+  50% {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.6), inset 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: none;
+  }
+}
+
+.form-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}

@@ -1,0 +1,118 @@
+[
+  {
+    "name": "Naproxen - Below Min",
+    "values": {
+      "medication": "naproxen",
+      "dateOfBirth": [-150, 0, -1],
+      "weight": "39",
+      "dosage": "219",
+      "frequency": "0"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["naproxen_below_min"],
+      "weight": ["naproxen_below_min"],
+      "dosage": ["naproxen_below_min"],
+      "frequency": ["naproxen_below_min"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": ["Date of Birth must result in a realistic age between 0 and 150 years"],
+      "weight": ["Naproxen requires weight greater than 40 kg"],
+      "dosage": ["Naproxen dosage must be at least 220 mg"],
+      "frequency": ["Frequency must be at least 1"]
+    }
+  },{
+    "name": "Naproxen - Boundary Min",
+    "values": {
+      "medication": "naproxen",
+      "dateOfBirth": [-150, 0, 0],
+      "weight": "40",
+      "dosage": "220",
+      "frequency": "1"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["naproxen_nominal", "naproxen_boundary_min"],
+      "weight": ["naproxen_nominal", "naproxen_boundary_min"],
+      "dosage": ["naproxen_nominal", "naproxen_boundary_min"],
+      "frequency": ["naproxen_nominal", "naproxen_boundary_min"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": [],
+      "weight": [],
+      "dosage": [],
+      "frequency": []
+    }
+  },{
+    "name": "Naproxen - Nominal",
+    "values": {
+      "medication": "naproxen",
+      "dateOfBirth": [-12, 0, -1],
+      "weight": "41",
+      "dosage": "221",
+      "frequency": "2"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["naproxen_nominal"],
+      "weight": ["naproxen_nominal"],
+      "dosage": ["naproxen_nominal"],
+      "frequency": ["naproxen_nominal"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": [],
+      "weight": [],
+      "dosage": [],
+      "frequency": []
+    }
+  },{
+    "name": "Naproxen - Boundary Max",
+    "values": {
+      "medication": "naproxen",
+      "dateOfBirth": [-12, 0, 0],
+      "weight": "500",
+      "dosage": "550",
+      "frequency": "3"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["naproxen_nominal", "naproxen_boundary_max"],
+      "weight": ["naproxen_nominal", "naproxen_boundary_max"],
+      "dosage": ["naproxen_nominal", "naproxen_boundary_max"],
+      "frequency": ["naproxen_nominal", "naproxen_boundary_max"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": [],
+      "weight": [],
+      "dosage": [],
+      "frequency": []
+    }
+  },{
+    "name": "Naproxen - Above Max",
+    "values": {
+      "medication": "naproxen",
+      "dateOfBirth": [-12, 0, 1],
+      "weight": "501",
+      "dosage": "551",
+      "frequency": "4"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["naproxen_above_max"],
+      "weight": ["naproxen_above_max"],
+      "dosage": ["naproxen_above_max"],
+      "frequency": ["naproxen_above_max"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": ["Children (age 12 and under) cannot take naproxen"],
+      "weight": ["Weight must not exceed 500"],
+      "dosage": ["Naproxen dosage must not exceed 550 mg"],
+      "frequency": ["Naproxen frequency must not exceed 3"]
+    }
+  }
+]
