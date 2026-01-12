@@ -8,8 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest",
-    "publish": "node scripts/publish.js"
+    "test": "vitest"
   },
   "dependencies": {
     "react": "^19.2.0",
