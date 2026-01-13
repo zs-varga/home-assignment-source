@@ -8,8 +8,8 @@ const TOKEN_VERSION = '1'
 /**
  * Encodes candidate access parameters into a token
  * @param {string} email - Candidate email
- * @param {string} date - Date in YYYY-MM-DD format
- * @param {string} time - Time in HH:MM format
+ * @param {string} date - Date in YYYY-MM-DD format (interpreted as CET)
+ * @param {string} time - Time in HH:MM format (interpreted as CET)
  * @param {string} duration - Duration (e.g., "3h", "2h", "4h")
  * @returns {string} Encoded token
  */
@@ -18,8 +18,15 @@ export function encodeAccessToken(email, date, time, duration) {
     throw new Error('All parameters (email, date, time, duration) are required')
   }
 
+  // Normalize time format (support both "8:00" and "08:00")
+  const timeParts = time.split(':')
+  const normalizedTime = timeParts.map(part => part.padStart(2, '0')).join(':')
+
+  // Create ISO 8601 datetime with CET offset (+01:00)
+  const iso8601DateTime = `${date}T${normalizedTime}:00+01:00`
+
   // Create data string with pipe separators
-  const data = `${email}|${date}|${time}|${duration}`
+  const data = `${email}|${iso8601DateTime}|${duration}`
 
   // Generate checksum before encoding
   const checksum = generateChecksum(data)
@@ -34,7 +41,7 @@ export function encodeAccessToken(email, date, time, duration) {
 /**
  * Decodes a token back to candidate access parameters
  * @param {string} token - Encoded token
- * @returns {Object} Decoded parameters {email, date, time, duration}
+ * @returns {Object} Decoded parameters {email, iso8601DateTime, duration}
  * @throws {Error} If token is invalid or checksum doesn't match
  */
 export function decodeAccessToken(token) {
@@ -42,7 +49,7 @@ export function decodeAccessToken(token) {
     // Decode from Base64
     const tokenData = atob(token)
 
-    // Split by first two colons only (in case email contains colons, though unlikely)
+    // Split by first two colons only
     const lastColonIndex = tokenData.lastIndexOf(':')
     const checksumSection = tokenData.substring(lastColonIndex + 1)
     const beforeChecksum = tokenData.substring(0, lastColonIndex)
@@ -61,14 +68,19 @@ export function decodeAccessToken(token) {
       throw new Error(`Token checksum validation failed (got ${checksumSection}, expected ${expectedChecksum})`)
     }
 
-    // Now parse the data
-    const [email, date, time, duration] = data.split('|')
-
-    if (!email || !date || !time || !duration) {
+    // Now parse the data - email|iso8601DateTime|duration
+    const parts = data.split('|')
+    if (parts.length !== 3) {
       throw new Error('Invalid token format')
     }
 
-    return { email, date, time, duration }
+    const [email, iso8601DateTime, duration] = parts
+
+    if (!email || !iso8601DateTime || !duration) {
+      throw new Error('Invalid token format')
+    }
+
+    return { email, iso8601DateTime, duration }
   } catch (error) {
     throw new Error(`Failed to decode token: ${error.message}`)
   }
@@ -76,15 +88,15 @@ export function decodeAccessToken(token) {
 
 /**
  * Validates if current time is within the access window
- * @param {string} date - Date in YYYY-MM-DD format
- * @param {string} time - Time in HH:MM format
+ * @param {string} iso8601DateTime - ISO 8601 datetime with timezone offset (e.g., "2026-01-13T08:00:00+01:00")
  * @param {string} duration - Duration (e.g., "3h", "2h")
  * @returns {Object} {isValid: boolean, message: string, timeRemaining: number}
  */
-export function validateAccessWindow(date, time, duration) {
+export function validateAccessWindow(iso8601DateTime, duration) {
   try {
-    // Parse the start datetime
-    const startDateTime = new Date(`${date}T${time}:00`)
+    // Parse the ISO 8601 datetime with timezone offset
+    // JavaScript's Date constructor properly handles the offset
+    const startDateTime = new Date(iso8601DateTime)
 
     if (isNaN(startDateTime.getTime())) {
       return {
@@ -107,7 +119,7 @@ export function validateAccessWindow(date, time, duration) {
     const durationHours = parseInt(durationMatch[1], 10)
     const endDateTime = new Date(startDateTime.getTime() + durationHours * 60 * 60 * 1000)
 
-    // Check current time
+    // Check current time (in UTC)
     const now = new Date()
 
     if (now < startDateTime) {

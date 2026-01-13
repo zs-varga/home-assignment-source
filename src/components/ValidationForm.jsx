@@ -82,6 +82,33 @@ function ValidationForm({ accessValidation }) {
     saveBackup('detector_form_accomplishments', formAccomplishments)
   }, [accomplishments, previousAccomplishments, formAccomplishments])
 
+  // Autosave: every 10 minutes and when access window expires
+  useEffect(() => {
+    const handleSaveCallback = () => {
+      submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail || 'zsolt.varga@supercharge.io')
+    }
+
+    // Set up 10-minute interval autosave
+    const tenMinutesMs = 10 * 60 * 1000
+    const autosaveInterval = setInterval(() => {
+      handleSaveCallback()
+    }, tenMinutesMs)
+
+    // Listen for access window expiry (timeRemainingSeconds becomes 0 or less)
+    const expiryCheckInterval = setInterval(() => {
+      if (accessValidation && accessValidation.timeRemainingSeconds !== undefined && accessValidation.timeRemainingSeconds <= 0) {
+        handleSaveCallback()
+        clearInterval(expiryCheckInterval)
+      }
+    }, 1000)
+
+    // Cleanup
+    return () => {
+      clearInterval(autosaveInterval)
+      clearInterval(expiryCheckInterval)
+    }
+  }, [accomplishments, formAccomplishments, candidateEmail, accessValidation])
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({

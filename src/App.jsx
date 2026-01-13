@@ -7,28 +7,37 @@ function App() {
   const [accessValidation, setAccessValidation] = useState(() => {
     let token = null
 
-    // Try to get token from path (e.g., /MTpjYW5k...)
-    const pathMatch = window.location.pathname.match(/\/([A-Za-z0-9+/=]+)$/)
-    if (pathMatch) {
-      token = pathMatch[1]
+    // Check for unencoded parameters first
+    const params = new URLSearchParams(window.location.search)
+    const email = params.get('email')
+    const date = params.get('date')
+    const time = params.get('time')
+    const duration = params.get('duration')
+
+    // If unencoded parameters exist, don't process token yet (useEffect will handle redirect)
+    if (email && date && time && duration) {
+      return {
+        isValid: false,
+        message: 'Invalid token',
+        timeRemaining: 0,
+        status: 'invalid'
+      }
     }
 
-    // If not found in path, try query parameter without 'token=' prefix
-    if (!token) {
-      const search = window.location.search.substring(1) // Remove leading ?
-      const params = new URLSearchParams(search)
-      token = params.get('token')
+    // Only accept raw query string as token (no parameter names like key=value)
+    const search = window.location.search.substring(1) // Remove leading ?
+    // Check if this looks like parameter format by checking for known parameter names
+    const knownParams = ['email', 'date', 'time', 'duration', 'token']
+    const hasKnownParam = knownParams.some(param => search.startsWith(param + '='))
 
-      // If still no token, check if the entire query string is the token (no parameter names)
-      if (!token && search && !search.includes('=')) {
-        token = search
-      }
+    if (search && !hasKnownParam) {
+      token = search
     }
 
     if (token) {
       try {
         const decoded = decodeAccessToken(token)
-        const validation = validateAccessWindow(decoded.date, decoded.time, decoded.duration)
+        const validation = validateAccessWindow(decoded.iso8601DateTime, decoded.duration)
         if (!validation.isValid && !validation.message.includes('not yet available') && !validation.message.includes('expired')) {
           return {
             isValid: false,
@@ -59,22 +68,13 @@ function App() {
   useEffect(() => {
     let token = null
 
-    // Try to get token from path
-    const pathMatch = window.location.pathname.match(/\/([A-Za-z0-9+/=]+)$/)
-    if (pathMatch) {
-      token = pathMatch[1]
-    }
+    // Only accept raw query string as token (no parameter names like key=value)
+    const search = window.location.search.substring(1)
+    const knownParams = ['email', 'date', 'time', 'duration', 'token']
+    const hasKnownParam = knownParams.some(param => search.startsWith(param + '='))
 
-    // If not found in path, try query string
-    if (!token) {
-      const search = window.location.search.substring(1)
-      const params = new URLSearchParams(search)
-      token = params.get('token')
-
-      // If still no token, check if entire query string is the token
-      if (!token && search && !search.includes('=')) {
-        token = search
-      }
+    if (search && !hasKnownParam) {
+      token = search
     }
 
     const params = new URLSearchParams(window.location.search)
@@ -83,11 +83,12 @@ function App() {
     const time = params.get('time')
     const duration = params.get('duration')
 
-    // If unencoded parameters exist, encode and redirect
+    // If unencoded parameters exist, encode and redirect to raw query format
     if (email && date && time && duration && !token) {
       try {
         const encodedToken = encodeAccessToken(email, date, time, duration)
-        window.location.replace(`/${encodedToken}`)
+        const currentPath = window.location.pathname.endsWith('/') ? window.location.pathname : `${window.location.pathname}/`
+        window.location.href = `${currentPath}?${encodedToken}`
         return
       } catch {
         // Silent fail
@@ -101,7 +102,7 @@ function App() {
 
         // Set interval to update validation every second for live timer updates
         const interval = setInterval(() => {
-          const validation = validateAccessWindow(decoded.date, decoded.time, decoded.duration)
+          const validation = validateAccessWindow(decoded.iso8601DateTime, decoded.duration)
           setAccessValidation(validation)
         }, 1000)
 
@@ -180,7 +181,7 @@ function App() {
       <>
         <h1>QA Home Assignment</h1>
         <p>Explore the form below, try every interesting value!</p>
-        <p>You have {getTimeDisplay() || 'unlimited time'} to finish the assignment.</p>
+        <p>You have {getTimeDisplay() || 'unlimited time'} to finish the assignment. Your progress is automatically saved every 10 minutes.</p>
       </>
     )
   }
