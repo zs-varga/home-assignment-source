@@ -253,6 +253,7 @@ export function restoreFromBackup(key) {
  */
 export function monitorStorageKey(key, interval = 1000) {
   let lastValue = null
+  let lastValidation = null
   let timeoutId = null
 
   const check = () => {
@@ -285,7 +286,15 @@ export function monitorStorageKey(key, interval = 1000) {
           }
         }
 
-        notifyListeners(key, validation.data, validation.isValid)
+        // Only notify listeners if validation result actually changed
+        const validationChanged = !lastValidation ||
+          lastValidation.isValid !== validation.isValid ||
+          JSON.stringify(lastValidation.data) !== JSON.stringify(validation.data)
+
+        if (validationChanged) {
+          lastValidation = validation
+          notifyListeners(key, validation.data, validation.isValid)
+        }
       }
     } catch {
       // Silent fail

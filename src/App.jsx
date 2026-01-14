@@ -1,6 +1,7 @@
 import './App.css'
 import { useState, useEffect } from 'react'
 import ValidationForm from './components/ValidationForm'
+import Timer from './components/Timer'
 import { encodeAccessToken, decodeAccessToken, validateAccessWindow } from './utils/accessTokenManager'
 
 function App() {
@@ -67,7 +68,7 @@ function App() {
     }
   })
 
-  // Handle access token redirect and validation interval
+  // Handle access token redirect and check when access expires
   useEffect(() => {
     let token = null
 
@@ -98,19 +99,22 @@ function App() {
       }
     }
 
-    // If token exists, set up interval for periodic validation
+    // If token exists, set up interval to check when access expires
     if (token) {
       try {
         const decoded = decodeAccessToken(token)
 
-        // Set interval to update validation every second for live timer updates
+        // Check every 5 seconds if access has expired (instead of every second)
         const interval = setInterval(() => {
           const validation = validateAccessWindow(decoded.iso8601DateTime, decoded.duration)
-          setAccessValidation({
-            ...validation,
-            email: decoded.email
-          })
-        }, 1000)
+          // Only update state if access status changed (expired)
+          if (!validation.isValid) {
+            setAccessValidation({
+              ...validation,
+              email: decoded.email
+            })
+          }
+        }, 5000)
 
         return () => clearInterval(interval)
       } catch {
@@ -119,21 +123,6 @@ function App() {
     }
   }, [])
 
-  const getTimeDisplay = () => {
-    if (!accessValidation || accessValidation.timeRemainingSeconds === undefined) {
-      return ''
-    }
-
-    const totalSeconds = accessValidation.timeRemainingSeconds
-    const hours = Math.floor(totalSeconds / 3600)
-    const minutes = Math.floor((totalSeconds % 3600) / 60)
-    const seconds = totalSeconds % 60
-
-    if (hours > 0) {
-      return `${hours}h ${minutes}m ${seconds}s`
-    }
-    return `${minutes}m ${seconds}s`
-  }
 
   const getAccessStatus = () => {
     if (accessValidation.status === 'invalid') {
@@ -187,7 +176,7 @@ function App() {
       <>
         <h1>QA Home Assignment</h1>
         <p>Explore the form below, try every interesting value!</p>
-        <p>You have {getTimeDisplay() || 'unlimited time'} to finish the assignment. Your progress is automatically saved.</p>
+        <p>You have <Timer totalSeconds={accessValidation.timeRemainingSeconds} /> to finish the assignment. Your progress is automatically saved.</p>
       </>
     )
   }

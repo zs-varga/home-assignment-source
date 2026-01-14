@@ -82,6 +82,12 @@ function ValidationForm({ accessValidation }) {
       return
     }
 
+    // Check if there are any accomplishments to save
+    const hasAccomplishments = Object.keys(accomplishments).length > 0 || formAccomplishments.length > 0
+    if (!hasAccomplishments) {
+      return
+    }
+
     const now = Date.now()
     const saveIntervalMs = 1 * 60 * 1000 // 1 minute for testing (change to 10 * 60 * 1000 for production)
     const timeSinceLastSave = now - lastAutosaveTime.current
@@ -243,7 +249,10 @@ function ValidationForm({ accessValidation }) {
           <legend>Medication Prescription</legend>
 
           <div className="form-group">
-            <label htmlFor="medication">Medication</label>
+            <label htmlFor="medication">
+              Medication
+              <span className="help-icon" data-tooltip="Name of the medication prescribed">?</span>
+            </label>
             <input
               type="text"
               id="medication"
@@ -262,7 +271,10 @@ function ValidationForm({ accessValidation }) {
           </div>
 
           <div className="form-group">
-            <label htmlFor="dateOfBirth">Date of Birth</label>
+            <label htmlFor="dateOfBirth">
+              Date of Birth
+              <span className="help-icon" data-tooltip="Patient's date of birth in YYYY-MM-DD format">?</span>
+            </label>
             <input
               type="text"
               id="dateOfBirth"
@@ -281,7 +293,10 @@ function ValidationForm({ accessValidation }) {
           </div>
 
           <div className="form-group">
-            <label htmlFor="weight">Weight</label>
+            <label htmlFor="weight">
+              Weight
+              <span className="help-icon" data-tooltip="Patient's weight in kilograms">?</span>
+            </label>
             <input
               type="text"
               id="weight"
@@ -300,7 +315,10 @@ function ValidationForm({ accessValidation }) {
           </div>
 
           <div className="form-group">
-            <label htmlFor="dosage">Dosage</label>
+            <label htmlFor="dosage">
+              Dosage
+              <span className="help-icon" data-tooltip="Medication dosage in milligrams per use">?</span>
+            </label>
             <input
               type="text"
               id="dosage"
@@ -319,7 +337,10 @@ function ValidationForm({ accessValidation }) {
           </div>
 
           <div className="form-group">
-            <label htmlFor="frequency">Frequency</label>
+            <label htmlFor="frequency">
+              Frequency
+              <span className="help-icon" data-tooltip="How often per day the medication should be taken">?</span>
+            </label>
             <input
               type="text"
               id="frequency"
