@@ -46,7 +46,10 @@ function App() {
             status: 'invalid'
           }
         }
-        return validation
+        return {
+          ...validation,
+          email: decoded.email
+        }
       } catch {
         return {
           isValid: false,
@@ -103,7 +106,10 @@ function App() {
         // Set interval to update validation every second for live timer updates
         const interval = setInterval(() => {
           const validation = validateAccessWindow(decoded.iso8601DateTime, decoded.duration)
-          setAccessValidation(validation)
+          setAccessValidation({
+            ...validation,
+            email: decoded.email
+          })
         }, 1000)
 
         return () => clearInterval(interval)
@@ -181,7 +187,7 @@ function App() {
       <>
         <h1>QA Home Assignment</h1>
         <p>Explore the form below, try every interesting value!</p>
-        <p>You have {getTimeDisplay() || 'unlimited time'} to finish the assignment. Your progress is automatically saved every 10 minutes.</p>
+        <p>You have {getTimeDisplay() || 'unlimited time'} to finish the assignment. Your progress is automatically saved.</p>
       </>
     )
   }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './ValidationForm.css'
 import FieldBadges from './Badges'
 import { useSyncedSessionStorage } from '../hooks/useSyncedSessionStorage'
@@ -33,18 +33,12 @@ function ValidationForm({ accessValidation }) {
   const [formAccomplishments, setFormAccomplishments] = useSyncedSessionStorage('detector_form_accomplishments', [])
   const [storageWasTampered, setStorageWasTampered] = useState(false)
   const [multiWindowDetected, setMultiWindowDetected] = useState(false)
-  const [candidateEmail] = useState(() => {
-    // Extract email from access token on mount
-    const params = new URLSearchParams(window.location.search)
-    const token = params.get('token')
-
-    if (token && accessValidation) {
-      // Email is already decoded in App.jsx, we just need to extract it if available
-      // For now, we'll use a default email
-      return accessValidation.email || 'zsolt.varga@supercharge.io'
-    }
-    return null
-  })
+  // Get email from accessValidation (already decoded in App.jsx)
+  const candidateEmail = accessValidation?.email || null
+  // Track last autosave time to avoid recreating intervals
+  const lastAutosaveTime = useRef(0)
+  // Track last saved accomplishments to avoid saving unchanged data
+  const lastSavedAccomplishments = useRef(null)
 
   // Set up storage change detection and monitoring
   useEffect(() => {
@@ -82,32 +76,35 @@ function ValidationForm({ accessValidation }) {
     saveBackup('detector_form_accomplishments', formAccomplishments)
   }, [accomplishments, previousAccomplishments, formAccomplishments])
 
-  // Autosave: every 10 minutes and when access window expires
+  // Autosave: check if enough time has passed since last save
   useEffect(() => {
-    const handleSaveCallback = () => {
-      submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail || 'zsolt.varga@supercharge.io')
+    if (!accessValidation || !accessValidation.isValid) {
+      return
     }
 
-    // Set up 10-minute interval autosave
-    const tenMinutesMs = 10 * 60 * 1000
-    const autosaveInterval = setInterval(() => {
-      handleSaveCallback()
-    }, tenMinutesMs)
+    const now = Date.now()
+    const saveIntervalMs = 1 * 60 * 1000 // 1 minute for testing (change to 10 * 60 * 1000 for production)
+    const timeSinceLastSave = now - lastAutosaveTime.current
 
-    // Listen for access window expiry (timeRemainingSeconds becomes 0 or less)
-    const expiryCheckInterval = setInterval(() => {
-      if (accessValidation && accessValidation.timeRemainingSeconds !== undefined && accessValidation.timeRemainingSeconds <= 0) {
-        handleSaveCallback()
-        clearInterval(expiryCheckInterval)
-      }
-    }, 1000)
+    // Stringify current accomplishments for comparison
+    const currentAccomplishmentsStr = JSON.stringify({ accomplishments, formAccomplishments })
+    const lastSavedStr = lastSavedAccomplishments.current
 
-    // Cleanup
-    return () => {
-      clearInterval(autosaveInterval)
-      clearInterval(expiryCheckInterval)
+    // Check if accomplishments have changed (comparing stringified versions)
+    const accomplishmentsChanged = lastSavedStr === null || currentAccomplishmentsStr !== lastSavedStr
+
+    // Only save if enough time has passed AND accomplishments changed
+    if (timeSinceLastSave >= saveIntervalMs && accomplishmentsChanged) {
+      lastAutosaveTime.current = now
+      lastSavedAccomplishments.current = currentAccomplishmentsStr
+      submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail)
     }
-  }, [accomplishments, formAccomplishments, candidateEmail, accessValidation])
+
+    // If access window has expired, do a final save (regardless of changes)
+    if (accessValidation.timeRemainingSeconds !== undefined && accessValidation.timeRemainingSeconds <= 0) {
+      submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail)
+    }
+  }, [accessValidation, accomplishments, formAccomplishments, candidateEmail])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -236,7 +233,7 @@ function ValidationForm({ accessValidation }) {
   }
 
   const handleSave = () => {
-    submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail || 'zsolt.varga@supercharge.io')
+    submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail)
   }
 
   return (
@@ -351,8 +348,8 @@ function ValidationForm({ accessValidation }) {
 
         <div className="form-actions">
           <button type="submit" className="btn btn-primary">Submit</button>
-          <button type="button" className="btn btn-success" onClick={handleSave}>Save</button>
-          <button type="reset" className="btn btn-secondary" onClick={handleReset}>Reset</button>
+          <button type="button" className="btn btn-success" onClick={handleSave} style={{ display: 'none' }}>Save</button>
+          <button type="reset" className="btn btn-secondary" onClick={handleReset} style={{ display: 'none' }}>Reset</button>
         </div>
       </form>
 

@@ -12,27 +12,32 @@ const GOOGLE_FORM_CONFIG = {
 }
 
 /**
- * Formats accomplishments object into a readable string for form submission
+ * Formats accomplishments object into a comma-separated string for form submission
+ * Format: field_detection, field_detection, field_detection...
  * @param {Object} accomplishments - Object containing accomplishment arrays by field
  * @param {Array} formAccomplishments - Array of form-level accomplishments
  * @returns {string} Formatted accomplishments string
  */
 export function formatAccomplishmentsForSubmission(accomplishments, formAccomplishments) {
-  const parts = []
+  const items = []
 
-  // Add field accomplishments
+  // Add field accomplishments in field_detection format
   Object.entries(accomplishments).forEach(([fieldName, badges]) => {
     if (badges && badges.length > 0) {
-      parts.push(`${fieldName}: ${badges.join(', ')}`)
+      badges.forEach(badge => {
+        items.push(`${fieldName}_${badge}`)
+      })
     }
   })
 
-  // Add form accomplishments
+  // Add form accomplishments in form_detection format
   if (formAccomplishments && formAccomplishments.length > 0) {
-    parts.push(`form: ${formAccomplishments.join(', ')}`)
+    formAccomplishments.forEach(accomplishment => {
+      items.push(`form_${accomplishment}`)
+    })
   }
 
-  return parts.join('\n')
+  return items.join(', ')
 }
 
 /**
