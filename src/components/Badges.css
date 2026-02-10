@@ -1,24 +1,89 @@
 .field-badges {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 0.3rem;
+  gap: 0.2rem;
   align-items: center;
   max-width: 100%;
-  margin-top: 0.3rem;
+  margin-top: 0.2rem;
 }
 
-.badge-text {
-  display: inline-block;
+.badge-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 0.1rem 0.3rem;
-  border-radius: 3px;
-  font-size: 0.6rem;
-  font-weight: 400;
-  white-space: nowrap;
+  border-radius: 20% 20%;
+  font-size: 0.66rem;
+  font-weight: bold;
+  cursor: help;
+  position: relative;
+  flex-shrink: 0;
+  padding: 0.1rem 0.2rem;
+  min-width: 1.2rem;
 }
 
-.badge-text.badge-new {
+/* Medicine-specific background colors */
+.badge-icon.badge-med-aspirin {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.badge-icon.badge-med-ibuprofen {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+}
+
+.badge-icon.badge-med-paracetamol {
+  background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+}
+
+.badge-icon.badge-med-naproxen {
+  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+}
+
+.badge-icon.badge-med-placebo {
+  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+}
+
+.badge-icon::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: normal;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.badge-icon::before {
+  content: "";
+  position: absolute;
+  bottom: 115%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #333;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.badge-icon:hover::after,
+.badge-icon:hover::before {
+  opacity: 1;
+}
+
+.badge-icon.badge-new {
   animation: badgeFlash 0.6s ease-in-out;
 }
 
@@ -29,7 +94,9 @@
   }
   50% {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.6), inset 0 0 8px rgba(255, 255, 255, 0.3);
+    box-shadow:
+      0 0 6px rgba(255, 255, 255, 0.6),
+      inset 0 0 8px rgba(255, 255, 255, 0.3);
   }
   100% {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
