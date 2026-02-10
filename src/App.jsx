@@ -154,11 +154,54 @@ function App() {
 
     if (status === 'early' && accessValidation) {
       const match = accessValidation.message.match(/Starts in (\d+) minute\(s\)\./)
-      const minutesUntilStart = match ? match[1] : '0'
+      const minutes = match ? parseInt(match[1], 10) : 0
+
+      // Format time into human-readable units
+      const timeParts = []
+      let remaining = minutes
+      const MINUTES_PER_HOUR = 60
+      const HOURS_PER_DAY = 24
+      const DAYS_PER_MONTH = 30
+      const MONTHS_PER_YEAR = 12
+
+      const totalMinutesPerYear = MINUTES_PER_HOUR * HOURS_PER_DAY * DAYS_PER_MONTH * MONTHS_PER_YEAR
+      const years = Math.floor(remaining / totalMinutesPerYear)
+      if (years > 0) {
+        timeParts.push(`${years} year${years === 1 ? '' : 's'}`)
+        remaining -= years * totalMinutesPerYear
+      }
+
+      const totalMinutesPerMonth = MINUTES_PER_HOUR * HOURS_PER_DAY * DAYS_PER_MONTH
+      const months = Math.floor(remaining / totalMinutesPerMonth)
+      if (months > 0) {
+        timeParts.push(`${months} month${months === 1 ? '' : 's'}`)
+        remaining -= months * totalMinutesPerMonth
+      }
+
+      const totalMinutesPerDay = MINUTES_PER_HOUR * HOURS_PER_DAY
+      const days = Math.floor(remaining / totalMinutesPerDay)
+      if (days > 0) {
+        timeParts.push(`${days} day${days === 1 ? '' : 's'}`)
+        remaining -= days * totalMinutesPerDay
+      }
+
+      const hours = Math.floor(remaining / MINUTES_PER_HOUR)
+      if (hours > 0) {
+        timeParts.push(`${hours} hour${hours === 1 ? '' : 's'}`)
+        remaining -= hours * MINUTES_PER_HOUR
+      }
+
+      if (remaining > 0) {
+        timeParts.push(`${remaining} minute${remaining === 1 ? '' : 's'}`)
+      }
+
+      const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' })
+      const formattedTime = formatter.format(timeParts) || '0 minutes'
+
       return (
         <>
           <h1>QA Home Assignment</h1>
-          <p>This assignment will be available in {minutesUntilStart} minute(s).</p>
+          <p>This assignment will be available in {formattedTime}.</p>
         </>
       )
     }
