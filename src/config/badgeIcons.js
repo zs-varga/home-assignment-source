@@ -40,10 +40,23 @@ export const badgeIcons = {
   contains_html: '⟨⟩',
   contains_xss: 'X⚠',
   contains_sql_injection: 'S⚠',
-
-  // Medication-specific
   boundary_length_min: '←',
   boundary_length_max: '→',
+  total_boundary_max: '∑⬆',
+  total_above_max: '∑⬆+',
+
+  // Medication-specific (these use base pattern icons via extraction)
+  aspirin_boundary_max: '⬆',
+  aspirin_above_max: '⬆+',
+  ibuprofen_boundary_max: '⬆',
+  ibuprofen_above_max: '⬆+',
+  ibuprofen_total_boundary_max: '∑⬆',
+  ibuprofen_total_above_max: '∑⬆+',
+
+  paracetamol_boundary_max: '⬆',
+  paracetamol_above_max: '⬆+',
+  paracetamol_total_boundary_max: '∑⬆',
+  paracetamol_total_above_max: '∑⬆+',
 
   // Form-level detections
   enter_submit: '⏎',

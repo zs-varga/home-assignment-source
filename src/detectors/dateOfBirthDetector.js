@@ -174,7 +174,7 @@ export const dateOfBirthDetector = (value, allValues = {}) => {
         }
 
         if (!hasMedicationDetection) {
-          detections.push('boundary_max ')
+          detections.push('boundary_max')
           detections.push('nominal_value')
         }
       } else {

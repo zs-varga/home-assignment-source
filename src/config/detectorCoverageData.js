@@ -1,60 +1,74 @@
-/**
- * Detector Coverage Test Cases
- * Extracted from DETECTOR_COVERAGE.md
- */
+  (function () {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2).toISOString().split('T')[0];
+    const old150 = new Date(today.getFullYear() - 150, today.getMonth(), today.getDate() + 1).toISOString().split('T')[0];
+    const old150minus1 = new Date(today.getFullYear() - 150, today.getMonth(), today.getDate() - 1).toISOString().split('T')[0];
+    const year12 = new Date(today.getFullYear() - 12, today.getMonth(), today.getDate() + 1).toISOString().split('T')[0];
+    const year12plus1 = new Date(today.getFullYear() - 12, today.getMonth(), today.getDate() + 2).toISOString().split('T')[0];
+    const month6 = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate() + 1).toISOString().split('T')[0];
+    const month6plus1 = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate() + 2).toISOString().split('T')[0];
+    const month3 = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate() + 1).toISOString().split('T')[0];
+    const month3plus1 = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate() + 2).toISOString().split('T')[0];
 
-export const detectorCoverageData = [
-  ["a", "500", "2", "2000-06-15", "70"],
-  ["01234567890123456789", "500", "2", "2000-06-15", "70"],
-  ["012345678901234567890", "500", "2", "2000-06-15", "70"],
-  [";<script>alert('x')</script>", ";SELECT", "<div>", "<tag>", "<x>"],
-  [" x \t x ", " x \t x ", " x \t x ", " x \t x ", " x \t x "],
-  ["aspirin", "500,5", "2.5555", "2000-06-15", "+70.5"],
-  ["aspirin", "-500", "2.5.5", "2000-06-15", "-70"],
-  ["aspirin", "324", "0", "1980-01-01", "39"],
-  ["aspirin", "325", "1", "1980-01-01", "40"],
-  ["500", "2", "2010-01-01", "70"],
-  ["aspirin", "1000", "4", "2010-01-01", "500"],
-  ["aspirin", "1001", "5", "2025-01-01", "501"],
-  ["ibuprofen", "199", "0", "1980-01-01", "4"],
-  ["ibuprofen", "200", "1", "1980-01-01", "5"],
-  ["300", "2", "2010-06-15", "100"],
-  ["ibuprofen", "800", "4", "2010-06-15", "500"],
-  ["ibuprofen", "801", "5", "2025-01-01", "501"],
-  ["paracetamol", "499", "0", "1980-01-01", "4"],
-  ["paracetamol", "500", "1", "1980-01-01", "5"],
-  ["600", "2", "2010-06-15", "100"],
-  ["paracetamol", "1000", "4", "2010-06-15", "500"],
-  ["paracetamol", "1001", "5", "2025-01-01", "501"],
-  ["naproxen", "219", "0", "1980-01-01", "39"],
-  ["naproxen", "220", "1", "1980-01-01", "40"],
-  ["300", "2", "2010-01-01", "70"],
-  ["naproxen", "550", "3", "2010-01-01", "500"],
-  ["naproxen", "551", "4", "2025-01-01", "501"],
-  ["placebo", "500", "2", "2010-06-15", "70"],
-  ["aspirin", "500", "2", "2000/01/01", "70"],
-  ["aspirin", "500", "2", "2000-13-01", "70"],
-  ["aspirin", "500", "2", "2000-04-31", "70"],
-  ["aspirin", "500", "2", "2001-02-29", "70"],
-  ["aspirin", "500", "2", "2100-02-29", "70"],
-  ["placebo", "500", "2", "1825-01-01", "70"],
-  ["placebo", "500", "2", "1875-01-01", "70"],
-  ["placebo", "500", "2", "2025-01-01", "70"],
-  ["placebo", "199", "2", "2000-06-15", "70"],
-  ["placebo", "200", "2", "2000-06-15", "70"],
-  ["placebo", "1000", "2", "2000-06-15", "70"],
-  ["placebo", "1001", "2", "2000-06-15", "70"],
-  ["placebo", "500", "0", "2000-06-15", "70"],
-  ["placebo", "500", "1", "2000-06-15", "70"],
-  ["placebo", "500", "5", "2000-06-15", "70"],
-  ["placebo", "500", "6", "2000-06-15", "70"],
-  ["placebo", "500", "2", "2000-06-15", "4"],
-  ["placebo", "500", "2", "2000-06-15", "5"],
-  ["placebo", "500", "2", "2000-06-15", "500"],
-  ["placebo", "500", "2", "2000-06-15", "501"],
-]
+    const testData = [
+      ["", "", "", "", ""],
+      [" ;<script> ™@\t SELECT ", " ;<script> ™@\t SELECT ", " ;<script> ™@\t SELECT ", " ;<script> ™@\t SELECT ", " ;<script> ™@\t SELECT ",],
+      ["01234567890123456789", "0000-13-32", "-1", "-1", "-1"],
+      ["a", "2000/01/01", "a", "a", "a"],
+      ["a", "2000-02-29", "a", "a", "a"],
+      ["a", "2000-04-31", "a", "a", "a"],
+      ["a", "0000-01-01", "a", "a", "a"],
+      ["1000.5,0", "2000-02-30", "1000.5,0", "1000.5,0", "1000.5,0"],
+      ["2.5.5", old150minus1, "2.5.5", "2.5.5", "2.5.5"],
 
-/**
- * Column names for the data
- */
-export const detectorCoverageColumns = ["#", "Name", "Medication", "Dosage", "Frequency", "DateOfBirth", "Weight"]
+      ["placebo", todayStr, "4", "199", "0"],
+      ["placebo", tomorrow, "5", "200", "1"],
+      ["placebo", old150, "500", "1000", "5"],
+      ["placebo", old150minus1, "501", "1001", "6"],
+
+      ["aspirin", year12, "39", "324", "0"],
+      ["aspirin", year12plus1, "40", "325", "1"],
+      ["aspirin", old150, "500", "1000", "4"],
+      ["aspirin", old150minus1, "501", "1001", "5"],
+
+      ["ibuprofen", month6, "4", "199", "0"],
+      ["ibuprofen", month6plus1, "5", "200", "1"],
+      ["ibuprofen", old150, "500", "800", "4"],
+      ["ibuprofen", old150minus1, "501", "801", "5"],
+      ["ibuprofen", month6, "6", "240", "1"],
+      ["ibuprofen", month6, "6", "241", "1"],
+
+      ["paracetamol", month3, "4", "324", "0"],
+      ["paracetamol", month3plus1, "5", "325", "1"],
+      ["paracetamol", old150, "501", "1000", "4"],
+      ["paracetamol", old150minus1, "500", "1001", "5"],
+      ["paracetamol", month6, "6", "450", "1"],
+      ["paracetamol", month6, "6", "500", "1"],
+
+      ["naproxen", year12, "39", "219", "0"],
+      ["naproxen", year12plus1, "40", "220", "1"],
+      ["naproxen", old150, "500", "550", "3"],
+      ["naproxen", old150minus1, "501", "551", "4"],
+    ];
+    
+    const fieldNames = [
+      "medication",
+      "dateOfBirth",
+      "weight",
+      "dosage",
+      "frequency",
+    ];
+    const delayMs = 1000;
+
+    testData.forEach((row, index) => {
+      const data = {};
+      console.log(row);
+      fieldNames.forEach((name, i) => {
+        data[name] = row[i];
+      });
+      setTimeout(() => {
+        TEST.fillAndSubmit(data);
+      }, index * delayMs);
+    });
+  })();

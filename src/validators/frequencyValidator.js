@@ -46,7 +46,7 @@ export const validateFrequency = (value, allValues = {}) => {
     const age = getAge(allValues.dateOfBirth)
 
     // For aspirin, frequency must be less than 5
-    if (age !== null && age > 12) {
+    if (age !== null && age.years > 12) {
       if (numericValue >= 5) {
         errors.push('Aspirin frequency for adults must be less than 5')
       }
