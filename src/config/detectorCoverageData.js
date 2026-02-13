@@ -77,6 +77,7 @@
         data[name] = row[i];
       });
       setTimeout(() => {
+        // eslint-disable-next-line no-undef
         TEST.fillAndSubmit(data);
       }, index * delayMs);
     });

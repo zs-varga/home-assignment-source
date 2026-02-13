@@ -1,5 +1,4 @@
 import { validationRules } from '../config/validationRules'
-import { getAge } from '../utils/ageCalculator'
 
 // Helper function to check if a value contains a decimal point
 const hasDecimalPoint = (valueString) => {
