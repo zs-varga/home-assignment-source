@@ -42,7 +42,7 @@ export const validateDateOfBirth = (value, allValues = {}) => {
 
   // Length validation
   if (trimmedValue.length > 20) {
-    errors.push('Date of Birth must not exceed 20 characters')
+    errors.push(validationRules.dateOfBirth.maxLength.message)
   }
 
   // Parse date (checks YYYY-MM-DD format)
@@ -50,7 +50,7 @@ export const validateDateOfBirth = (value, allValues = {}) => {
 
   // Check if date format is valid
   if (!dateInfo.isValid) {
-    errors.push('Date of Birth must be in YYYY-MM-DD format')
+    errors.push(validationRules.dateOfBirth.invalidFormat.message)
   }
 
   // If there are errors, return now before further validation
@@ -62,25 +62,19 @@ export const validateDateOfBirth = (value, allValues = {}) => {
 
   // Check month validity (1-12)
   if (month < 1 || month > 12) {
-    errors.push('Month must be between 1 and 12')
+    errors.push(validationRules.dateOfBirth.invalidMonth.message)
   }
 
   // Check day validity (1-31)
   if (day < 1 || day > 31) {
-    errors.push('Day must be between 1 and 31')
+    errors.push(validationRules.dateOfBirth.invalidDay.message)
   }
 
   // If month is valid, check if day is valid for that month
   if (month >= 1 && month <= 12) {
     const maxDaysInMonth = getDaysInMonth(month, year)
     if (day > maxDaysInMonth) {
-      if (month === 2) {
-        errors.push(`February has a maximum of ${maxDaysInMonth} days${isLeapYear(year) ? ' in leap year' : ''}`)
-      } else if (month === 4 || month === 6 || month === 9 || month === 11) {
-        errors.push(`Month ${month} has a maximum of 30 days`)
-      } else {
-        errors.push(`Day is invalid for month ${month}`)
-      }
+      errors.push(validationRules.dateOfBirth.invalidDayForMonth(maxDaysInMonth, month, isLeapYear(year)))
     }
   }
 
@@ -90,35 +84,35 @@ export const validateDateOfBirth = (value, allValues = {}) => {
     const birthDate = new Date(year, month - 1, day)
 
     if (birthDate > today) {
-      errors.push('Date of Birth cannot be in the future')
+      errors.push(validationRules.dateOfBirth.futureDate.message)
     }
 
     // Validate: Age must be realistic (0-150)
     const dateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
     const ageObj = getAge(dateString)
     if (ageObj !== null && (ageObj.years > 150 || (ageObj.years === 150 && (ageObj.months > 0 || ageObj.days > 0)))) {
-      errors.push('Date of Birth must result in age between 0 and 150 years')
+      errors.push(validationRules.dateOfBirth.invalidAge.message)
     }
 
     // Aspirin-specific validation: Children (age < 12) cannot take aspirin
     const medication = allValues.medication ? allValues.medication.toLowerCase().trim() : ''
     if (medication === 'aspirin' && ageObj !== null && ageObj.years < 12) {
-      errors.push('Children (age 12 and under) cannot take aspirin')
+      errors.push(validationRules.dateOfBirth.aspirin.childRestriction)
     }
 
     // Ibuprofen-specific validation: Must be older than 6 months
     if (medication === 'ibuprofen' && ageObj !== null && (ageObj.years === 0 && ageObj.months < 6)) {
-      errors.push('Infants (under 6 months old) cannot take ibuprofen')
+      errors.push(validationRules.dateOfBirth.ibuprofen.infantRestriction)
     }
 
     // Paracetamol-specific validation: Must be older than 3 months
     if (medication === 'paracetamol' && ageObj !== null && (ageObj.years === 0 && ageObj.months < 3)) {
-      errors.push('Infants (under 3 months old) cannot take paracetamol')
+      errors.push(validationRules.dateOfBirth.paracetamol.infantRestriction)
     }
 
     // Naproxen-specific validation: Only for adults (age > 12)
     if (medication === 'naproxen' && ageObj !== null && ageObj.years < 12) {
-      errors.push('Children (age 12 and under) cannot take naproxen')
+      errors.push(validationRules.dateOfBirth.naproxen.childRestriction)
     }
   }
 

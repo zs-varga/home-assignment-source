@@ -18,13 +18,13 @@ export const validateWeight = (value, allValues = {}) => {
 
   // Length validation (max 10 characters)
   if (trimmedValue.length > 10) {
-    errors.push('Weight must not exceed 10 characters')
+    errors.push(validationRules.weight.maxLength.message)
   }
 
   // Numeric validation
   const numericValue = parseFloat(trimmedValue)
   if (isNaN(numericValue)) {
-    errors.push('Weight must be a valid number')
+    errors.push(validationRules.weight.invalidNumber.message)
   }
 
   // If there are errors from length or numeric checks, return now
@@ -42,12 +42,12 @@ export const validateWeight = (value, allValues = {}) => {
 
   // Min value validation (min 5)
   if (numericValue < 5) {
-    errors.push('Weight must be at least 5')
+    errors.push(validationRules.weight.minValue.message)
   }
 
   // Max value validation (max 500)
   if (numericValue > 500) {
-    errors.push('Weight must not exceed 500')
+    errors.push(validationRules.weight.maxValue.message)
   }
 
   // Aspirin-specific validations
@@ -55,7 +55,7 @@ export const validateWeight = (value, allValues = {}) => {
   if (medication === 'aspirin') {
     // For aspirin, weight must be > 40
     if (numericValue < 40) {
-      errors.push('Aspirin requires weight greater than 40 kg')
+      errors.push(validationRules.weight.aspirin.minValue)
     }
   }
 
@@ -63,7 +63,7 @@ export const validateWeight = (value, allValues = {}) => {
   if (medication === 'ibuprofen') {
     // For ibuprofen, weight must be > 5
     if (numericValue <= 5) {
-      errors.push('Ibuprofen requires weight greater than 5 kg')
+      errors.push(validationRules.weight.ibuprofen.minValue)
     }
   }
 
@@ -71,7 +71,7 @@ export const validateWeight = (value, allValues = {}) => {
   if (medication === 'paracetamol') {
     // For paracetamol, weight must be greater than 5 kg
     if (numericValue <= 5) {
-      errors.push('Paracetamol requires weight greater than 5 kg')
+      errors.push(validationRules.weight.paracetamol.minValue)
     }
   }
 
@@ -79,7 +79,7 @@ export const validateWeight = (value, allValues = {}) => {
   if (medication === 'naproxen') {
     // For naproxen, weight must be > 40
     if (numericValue < 40) {
-      errors.push('Naproxen requires weight greater than 40 kg')
+      errors.push(validationRules.weight.naproxen.minValue)
     }
   }
 

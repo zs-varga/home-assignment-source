@@ -19,13 +19,13 @@ export const validateFrequency = (value, allValues = {}) => {
 
   // Length validation (max 10 characters)
   if (trimmedValue.length > 10) {
-    errors.push('Frequency must not exceed 10 characters')
+    errors.push(validationRules.frequency.maxLength.message)
   }
 
   // Numeric validation
   const numericValue = parseFloat(trimmedValue)
   if (isNaN(numericValue)) {
-    errors.push('Frequency must be a valid number')
+    errors.push(validationRules.frequency.invalidNumber.message)
   }
 
   // If there are errors from length or numeric checks, return now
@@ -35,18 +35,18 @@ export const validateFrequency = (value, allValues = {}) => {
 
   // Decimal validation (frequency must be integer only)
   if (hasDecimalPoint(trimmedValue)) {
-    errors.push('Frequency must be an integer (no decimal values)')
+    errors.push(validationRules.frequency.notInteger.message)
     return errors
   }
 
   // Min value validation (min 1)
   if (numericValue < 1) {
-    errors.push('Frequency must be at least 1')
+    errors.push(validationRules.frequency.minValue.message)
   }
 
   // Max value validation (max 5)
   if (numericValue > 5) {
-    errors.push('Frequency must not exceed 5')
+    errors.push(validationRules.frequency.maxValue.message)
   }
 
   // Aspirin-specific validations
@@ -57,7 +57,7 @@ export const validateFrequency = (value, allValues = {}) => {
     // For aspirin, frequency must be less than 5
     if (age !== null && age.years > 12) {
       if (numericValue >= 5) {
-        errors.push('Aspirin frequency for adults must be less than 5')
+        errors.push(validationRules.frequency.aspirin.maxValue)
       }
     }
   }
@@ -66,7 +66,7 @@ export const validateFrequency = (value, allValues = {}) => {
   if (medication === 'ibuprofen') {
     // For ibuprofen, frequency must be less than 5
     if (numericValue >= 5) {
-      errors.push('Ibuprofen frequency must be less than 5')
+      errors.push(validationRules.frequency.ibuprofen.maxValue)
     }
   }
 
@@ -74,7 +74,7 @@ export const validateFrequency = (value, allValues = {}) => {
   if (medication === 'paracetamol') {
     // For paracetamol, frequency must be less than 5
     if (numericValue >= 5) {
-      errors.push('Paracetamol frequency must be less than 5')
+      errors.push(validationRules.frequency.paracetamol.maxValue)
     }
   }
 
@@ -82,7 +82,7 @@ export const validateFrequency = (value, allValues = {}) => {
   if (medication === 'naproxen') {
     // For naproxen, frequency must not exceed 3
     if (numericValue > 3) {
-      errors.push('Naproxen frequency must not exceed 3')
+      errors.push(validationRules.frequency.naproxen.maxValue)
     }
   }
 

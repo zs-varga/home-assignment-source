@@ -207,7 +207,7 @@ export const frequencyDetector = (value, allValues = {}) => {
       hasMedicationDetection = true
     }
 
-    // Detect: Above maximum naproxen frequency (> 2)
+    // Detect: Above maximum naproxen frequency (> 3)
     if (numericValue > NAPROXEN_MAX) {
       detections.push('naproxen_above_max')
       hasMedicationDetection = true

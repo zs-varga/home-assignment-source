@@ -63,7 +63,7 @@ src/
 ├── App.jsx                          # Main app: access token validation, timers, header rendering
 ├── components/
 │   ├── ValidationForm.jsx           # Form submission, field management, detector/accomplishment tracking
-│   ├── Timer.jsx                    # Countdown timer display
+│   ├── Timer.jsx                    # Countdown timer showing time remaining for form access
 │   └── Badges.jsx                   # UI components for displaying detected patterns
 ├── detectors/                       # Pattern detection functions (called on form submission)
 │   ├── fieldDetector.js             # Generic field-level pattern detection
@@ -91,12 +91,16 @@ src/
 │   ├── ageCalculator.js             # Age calculation from date of birth
 │   └── readOnlyState.js             # deepFreeze() for immutable state
 ├── config/
-│   └── validationRules.js           # Centralized error messages for all validators
+│   ├── validationRules.js           # Centralized error messages for all validators
+│   ├── badgeIcons.js                # Maps detection tags to UI icons/emojis
+│   ├── badgeSortOrder.js            # Defines display order for badges
+│   └── detectorCoverageData.js      # Detector coverage metadata
 ├── __tests__/
 │   ├── integratedDetectorValidator.test.js  # Integration tests using fixtures
-│   └── fixtures/                    # JSON test case files (dynamically loaded)
+│   └── fixtures/                    # JSON test case files (dynamically loaded with Vite's import.meta.glob())
 ├── index.css                        # Global styles
-└── main.jsx                         # React entry point
+├── main.jsx                         # React entry point
+└── testConsole.js                   # Test console utility
 ```
 
 ### Key Components & Modules
@@ -109,13 +113,18 @@ src/
 - Autosaves every minute via Google Forms API
 - Clears form after successful submission
 
+**Timer.jsx** — Countdown timer display:
+- Shows remaining time until access window expires
+- Integrated with access token validation from App.jsx
+- Updates every second to reflect time remaining
+
 **Detector Functions** — Pattern detection (run on submit):
 - Return array of detection tags (e.g., `['boundary_testing', 'nominal_value']`)
 - Examples: `boundary_testing`, `nominal_value`, `edge_case_testing`, `enter_submit`, `nominal_form`
 - Stored in accomplishments object keyed by field name
 
 **Validators** — Form validation (run on change):
-- Return error message string (if invalid) or `null` (if valid)
+- Return array of error message strings: `Array<string>` (empty array means valid, non-empty means invalid)
 - Checked against `validationRules.js` for user-facing messages
 
 **Storage System** (`useProtectedSessionStorage` + `storageChangeDetector`):
@@ -135,9 +144,10 @@ src/
 ### Testing Strategy
 
 Tests use **fixtures** (JSON files in `__tests__/fixtures/`) containing test cases:
+- Fixture files: `aspirin.json`, `ibuprofen.json`, `naproxen.json`, `paracetamol.json`, `default.json`
 - Each fixture defines `values` (form inputs) and `expectations` (expected detector outputs and validation errors)
-- Date offsets `[-X, 0, 0]` are converted to relative dates (e.g., age calculation tests)
-- Tests dynamically load all fixture files and run integrated detector + validator checks
+- Date offsets `[-X, 0, 0]` in `dateOfBirth` are converted to relative dates (e.g., age calculation tests)
+- Tests dynamically load all fixture files using Vite's `import.meta.glob()` and run integrated detector + validator checks
 
 Run single test: `npm test -- integratedDetectorValidator.test.js`
 
@@ -197,7 +207,7 @@ When adding validators, always add corresponding rules to `validationRules.js`.
 
 ### ESLint Rules
 - Extends: `@eslint/js`, `react-hooks`, `react-refresh/vite`
-- Custom rule: Variables starting with uppercase or args starting with underscore are allowed as unused
+- Custom rule: Variables starting with uppercase or underscore are allowed as unused; function arguments starting with underscore are allowed as unused
 - Run `npm run lint` before committing
 
 ### Google Forms Integration
@@ -216,15 +226,3 @@ When adding validators, always add corresponding rules to `validationRules.js`.
 - Access validation checks expire every 5 seconds (not 1 second) to reduce overhead
 - Autosave interval is 1 minute for testing (change to 10 minutes for production)
 - Form is cleared after successful submission to free memory
-
-### Common Development Tasks
-
-**Run tests with logging**: Add `console.log()` temporarily, then run `npm test`
-
-**Debug detector output**: Add logged detections to a debug field in form, check console during form submission
-
-**Test access tokens locally**: Use `encodeAccessToken()` and `decodeAccessToken()` from `accessTokenManager.js` in browser console
-
-**Test tampering detection**: Manually edit sessionStorage in DevTools, then trigger storage change detection
-
-**Check accomplishments**: Open DevTools → Application → Session Storage, inspect `detector_accomplishments` and `detector_form_accomplishments`

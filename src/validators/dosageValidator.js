@@ -18,13 +18,13 @@ export const validateDosage = (value, allValues = {}) => {
 
   // Length validation (max 10 characters)
   if (trimmedValue.length > 10) {
-    errors.push('Dosage must not exceed 10 characters')
+    errors.push(validationRules.dosage.maxLength.message)
   }
 
   // Numeric validation
   const numericValue = parseFloat(trimmedValue)
   if (isNaN(numericValue)) {
-    errors.push('Dosage must be a valid number')
+    errors.push(validationRules.dosage.invalidNumber.message)
   }
 
   // If there are errors from length or numeric checks, return now
@@ -42,32 +42,32 @@ export const validateDosage = (value, allValues = {}) => {
 
   // Min value validation (min 200)
   if (numericValue < 200) {
-    errors.push('Dosage must be at least 200')
+    errors.push(validationRules.dosage.minValue.message)
   }
 
   // Max value validation (max 1000)
   // For paracetamol, skip generic max validation as it's handled by medication-specific validation
   const medication = allValues.medication ? allValues.medication.toLowerCase().trim() : ''
   if (medication !== 'paracetamol' && numericValue > 1000) {
-    errors.push('Dosage must not exceed 1000')
+    errors.push(validationRules.dosage.maxValue.message)
   }
   if (medication === 'aspirin') {
     // Aspirin dosage must be between 325 and 1000
     if (numericValue < 325) {
-      errors.push('Aspirin dosage must be at least 325 mg')
+      errors.push(validationRules.dosage.aspirin.minValue)
     }
     if (numericValue > 1000) {
-      errors.push('Aspirin dosage must not exceed 1000 mg')
+      errors.push(validationRules.dosage.aspirin.maxValue)
     }
   }
 
   // Ibuprofen-specific validations (dosage range 200-800)
   if (medication === 'ibuprofen') {
     if (numericValue < 200) {
-      errors.push('Ibuprofen dosage must be at least 200 mg')
+      errors.push(validationRules.dosage.ibuprofen.minValue)
     }
     if (numericValue > 800) {
-      errors.push('Ibuprofen dosage must not exceed 800 mg')
+      errors.push(validationRules.dosage.ibuprofen.maxValue)
     }
 
     // Ibuprofen total dosage formula: dosage * frequency < weight * 40
@@ -80,7 +80,7 @@ export const validateDosage = (value, allValues = {}) => {
       const rightSide = weight * 40
 
       if (leftSide >= rightSide) {
-        errors.push(`Ibuprofen total dose must satisfy: dosage × frequency < weight × 40`)
+        errors.push(validationRules.dosage.ibuprofen.totalDose)
       }
     }
   }
@@ -88,11 +88,11 @@ export const validateDosage = (value, allValues = {}) => {
   // Paracetamol-specific validations (dosage range 500-1000)
   if (medication === 'paracetamol') {
     if (numericValue < 500) {
-      errors.push('Paracetamol dosage must be at least 500 mg')
+      errors.push(validationRules.dosage.paracetamol.minValue)
     }
 
     if (numericValue > 1000) {
-      errors.push('Paracetamol dosage must not exceed 1000 mg')
+      errors.push(validationRules.dosage.paracetamol.maxValue)
     }
 
     // Paracetamol total dosage formula: dosage * frequency < weight * 75
@@ -105,7 +105,7 @@ export const validateDosage = (value, allValues = {}) => {
       const rightSide = weight * 75
 
       if (leftSide >= rightSide) {
-        errors.push(`Paracetamol total dose must satisfy: dosage × frequency < weight × 75`)
+        errors.push(validationRules.dosage.paracetamol.totalDose)
       }
     }
   }
@@ -114,11 +114,11 @@ export const validateDosage = (value, allValues = {}) => {
   if (medication === 'naproxen') {
     // Naproxen dosage range 220-550
     if (numericValue < 220) {
-      errors.push('Naproxen dosage must be at least 220 mg')
+      errors.push(validationRules.dosage.naproxen.minValue)
     }
 
     if (numericValue > 550) {
-      errors.push('Naproxen dosage must not exceed 550 mg')
+      errors.push(validationRules.dosage.naproxen.maxValue)
     }
   }
 

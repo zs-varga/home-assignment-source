@@ -1,11 +1,6 @@
 // Detector for medication field-specific testing patterns
-const ACCEPTED_MEDICATIONS = [
-  "aspirin",
-  "ibuprofen",
-  "paracetamol",
-  "naproxen",
-  "placebo",
-];
+import { ACCEPTED_MEDICATIONS } from '../config/medications'
+
 const MAX_LENGTH = 20;
 
 export const medicationDetector = (value, _allValues) => {

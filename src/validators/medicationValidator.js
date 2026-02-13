@@ -1,6 +1,5 @@
 import { validationRules } from '../config/validationRules'
-
-const ACCEPTED_MEDICATIONS = ['aspirin', 'ibuprofen', 'paracetamol', 'naproxen', 'placebo']
+import { ACCEPTED_MEDICATIONS } from '../config/medications'
 
 export const validateMedication = (value, _allValues) => {
   const errors = []

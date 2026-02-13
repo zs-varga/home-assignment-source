@@ -189,7 +189,6 @@ export const weightDetector = (value, allValues = {}) => {
     // Detect: Boundary at exactly 5kg for paracetamol
     if (numericValue === PARACETAMOL_MIN) {
       detections.push('paracetamol_boundary_min')
-      detections.push('paracetamol_nominal')
       hasMedicationDetection = true
     }
 
