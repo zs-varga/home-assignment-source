@@ -9,7 +9,7 @@
 }
 
 .validation-form {
-  background: #FFF;
+  background: #fff;
   padding: 0.75rem;
   border-radius: 0px;
   box-shadow: none;
@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .badges-panel {
@@ -45,7 +45,7 @@ legend {
   padding-bottom: 0.7rem;
   border-bottom: 1px solid #e0e0e0;
   width: 100%;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   letter-spacing: -0.3px;
 }
 
@@ -64,7 +64,7 @@ label {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .help-icon {
@@ -105,7 +105,7 @@ label {
 }
 
 .help-icon::before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 115%;
   left: 50%;
@@ -217,9 +217,10 @@ input:hover {
 
 .field-errors {
   display: flex;
-  flex-wrap: wrap;
   gap: 0;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  flex-direction: column;
 }
 
 .badges-title {
@@ -229,7 +230,7 @@ input:hover {
   color: #000;
   padding-bottom: 0.7rem;
   border-bottom: 1px solid #444;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   letter-spacing: -0.3px;
 }
 
@@ -256,7 +257,7 @@ input:hover {
   font-weight: 500;
   color: #000;
   text-transform: capitalize;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .form-errors {
