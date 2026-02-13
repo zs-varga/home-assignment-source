@@ -61,16 +61,16 @@ export const validateWeight = (value, allValues = {}) => {
 
   // Ibuprofen-specific validations
   if (medication === 'ibuprofen') {
-    // For ibuprofen, weight must be > 5
-    if (numericValue <= 5) {
+    // For ibuprofen, weight must be >= 5
+    if (numericValue < 5) {
       errors.push(validationRules.weight.ibuprofen.minValue)
     }
   }
 
   // Paracetamol-specific validations
   if (medication === 'paracetamol') {
-    // For paracetamol, weight must be greater than 5 kg
-    if (numericValue <= 5) {
+    // For paracetamol, weight must be >= 5 kg
+    if (numericValue < 5) {
       errors.push(validationRules.weight.paracetamol.minValue)
     }
   }

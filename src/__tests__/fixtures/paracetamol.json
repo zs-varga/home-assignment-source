@@ -20,7 +20,7 @@
       "dateOfBirth": ["Date of Birth must result in age between 0 and 150 years"],
       "weight": [
         "Weight must be at least 5",
-        "Paracetamol requires weight greater than 5 kg"
+        "Paracetamol requires weight at least 5 kg"
       ],
       "dosage": ["Paracetamol dosage must be at least 500 mg"],
       "frequency": ["Frequency must be at least 1"]
@@ -44,7 +44,7 @@
     "expectedValidationErrors": {
       "medication": [],
       "dateOfBirth": [],
-      "weight": ["Paracetamol requires weight greater than 5 kg"],
+      "weight": [],
       "dosage": ["Paracetamol total dose must satisfy: dosage × frequency < weight × 75"],
       "frequency": []
     }
@@ -115,7 +115,7 @@
       "dateOfBirth": ["Infants (under 3 months old) cannot take paracetamol"],
       "weight": ["Weight must not exceed 500"],
       "dosage": ["Paracetamol dosage must not exceed 1000 mg"],
-      "frequency": ["Paracetamol frequency must be less than 5"]
+      "frequency": ["Paracetamol frequency must not exceed 4"]
     }
   }
 ]

@@ -54,9 +54,9 @@ export const validateFrequency = (value, allValues = {}) => {
   if (medication === 'aspirin') {
     const age = getAge(allValues.dateOfBirth)
 
-    // For aspirin, frequency must be less than 5
+    // For aspirin, frequency must be <= 4
     if (age !== null && age.years > 12) {
-      if (numericValue >= 5) {
+      if (numericValue > 4) {
         errors.push(validationRules.frequency.aspirin.maxValue)
       }
     }
@@ -64,16 +64,16 @@ export const validateFrequency = (value, allValues = {}) => {
 
   // Ibuprofen-specific validations
   if (medication === 'ibuprofen') {
-    // For ibuprofen, frequency must be less than 5
-    if (numericValue >= 5) {
+    // For ibuprofen, frequency must be <= 4
+    if (numericValue > 4) {
       errors.push(validationRules.frequency.ibuprofen.maxValue)
     }
   }
 
   // Paracetamol-specific validations
   if (medication === 'paracetamol') {
-    // For paracetamol, frequency must be less than 5
-    if (numericValue >= 5) {
+    // For paracetamol, frequency must be <= 4
+    if (numericValue > 4) {
       errors.push(validationRules.frequency.paracetamol.maxValue)
     }
   }

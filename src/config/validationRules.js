@@ -66,13 +66,13 @@ export const validationRules = {
       message: 'Frequency must not exceed 5'
     },
     aspirin: {
-      maxValue: 'Aspirin frequency for adults must be less than 5'
+      maxValue: 'Aspirin frequency for adults must not exceed 4'
     },
     ibuprofen: {
-      maxValue: 'Ibuprofen frequency must be less than 5'
+      maxValue: 'Ibuprofen frequency must not exceed 4'
     },
     paracetamol: {
-      maxValue: 'Paracetamol frequency must be less than 5'
+      maxValue: 'Paracetamol frequency must not exceed 4'
     },
     naproxen: {
       maxValue: 'Naproxen frequency must not exceed 3'
@@ -141,10 +141,10 @@ export const validationRules = {
       minValue: 'Aspirin requires weight greater than 40 kg'
     },
     ibuprofen: {
-      minValue: 'Ibuprofen requires weight greater than 5 kg'
+      minValue: 'Ibuprofen requires weight at least 5 kg'
     },
     paracetamol: {
-      minValue: 'Paracetamol requires weight greater than 5 kg'
+      minValue: 'Paracetamol requires weight at least 5 kg'
     },
     naproxen: {
       minValue: 'Naproxen requires weight greater than 40 kg'
