@@ -57,6 +57,13 @@ export const frequencyDetector = (value, allValues = {}) => {
     detections.push('non_numeric')
   }
 
+  const numericValue = parseFloat(trimmedValue)
+
+  // Detect: Absolute minimum (0)
+  if (!isNaN(numericValue) && numericValue === 0) {
+    detections.push('absolute_minimum')
+  }
+
   // Detect: Decimal value (frequency must be integer only)
   if (isDecimal(trimmedValue)) {
     detections.push('decimal_value')
@@ -67,8 +74,6 @@ export const frequencyDetector = (value, allValues = {}) => {
       detections.push('precision_high')
     }
   }
-
-  const numericValue = parseFloat(trimmedValue)
 
   // Detect: Negative value
   if (numericValue < 0) {
@@ -253,6 +258,7 @@ export const frequencyDetector = (value, allValues = {}) => {
 
 // Descriptions for detected patterns
 export const detectionDescriptions = {
+  absolute_minimum: 'Absolute Min',
   non_numeric: 'Non-numeric',
   negative_value: 'Minus Sign',
   decimal_value: 'Decimal',

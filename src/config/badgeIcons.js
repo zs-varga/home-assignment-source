@@ -4,6 +4,7 @@
  */
 export const badgeIcons = {
   // Common across detectors
+  absolute_minimum: '⇩',
   below_min: '⇊',
   boundary_length_min: '⇩',
   boundary_min: '↓',
@@ -33,7 +34,6 @@ export const badgeIcons = {
   invalid_day_for_30day_month: '31',
   invalid_february_day: '30',
   invalid_leap_year_february: '29',
-  future_date: '⏭',
 
   // Text/Field issues
   empty_value: '∅',

@@ -13,11 +13,11 @@
       "dateOfBirth": ["naproxen_below_min"],
       "weight": ["naproxen_below_min"],
       "dosage": ["naproxen_below_min"],
-      "frequency": ["naproxen_below_min"]
+      "frequency": ["absolute_minimum", "naproxen_below_min"]
     },
     "expectedValidationErrors": {
       "medication": [],
-      "dateOfBirth": ["Date of Birth must result in a realistic age between 0 and 150 years"],
+      "dateOfBirth": ["Date of Birth must result in age between 0 and 150 years"],
       "weight": ["Naproxen requires weight greater than 40 kg"],
       "dosage": ["Naproxen dosage must be at least 220 mg"],
       "frequency": ["Frequency must be at least 1"]

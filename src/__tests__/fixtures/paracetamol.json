@@ -13,11 +13,11 @@
       "dateOfBirth": ["paracetamol_below_min"],
       "weight": ["paracetamol_below_min"],
       "dosage": ["paracetamol_below_min"],
-      "frequency": ["paracetamol_below_min"]
+      "frequency": ["absolute_minimum", "paracetamol_below_min"]
     },
     "expectedValidationErrors": {
       "medication": [],
-      "dateOfBirth": ["Date of Birth must result in a realistic age between 0 and 150 years"],
+      "dateOfBirth": ["Date of Birth must result in age between 0 and 150 years"],
       "weight": [
         "Weight must be at least 5",
         "Paracetamol requires weight greater than 5 kg"

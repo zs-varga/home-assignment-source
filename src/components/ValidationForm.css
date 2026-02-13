@@ -10,7 +10,7 @@
 
 .validation-form {
   background: #FFF;
-  padding: 1rem;
+  padding: 0.75rem;
   border-radius: 0px;
   box-shadow: none;
   border: 1px solid #000;
@@ -21,7 +21,7 @@
 }
 
 .badges-panel {
-  padding: 1rem;
+  padding: 0.75rem;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;

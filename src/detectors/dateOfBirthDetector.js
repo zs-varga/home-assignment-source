@@ -40,6 +40,11 @@ export const dateOfBirthDetector = (value, allValues = {}) => {
   const MAX_LENGTH = 20
   const TOTAL_MAX_LENGTH = 100
 
+  // Detect: Absolute minimum date (0000-01-01)
+  if (trimmedValue === '0000-01-01') {
+    detections.push('absolute_minimum')
+  }
+
   // Detect: Boundary length values (at max allowed)
   if (trimmedValue.length === MAX_LENGTH) {
     detections.push('boundary_length_max')
@@ -104,7 +109,10 @@ export const dateOfBirthDetector = (value, allValues = {}) => {
   const today = new Date()
   const birthDate = new Date(year, month - 1, day)
   if (birthDate > today) {
-    // Check medication-specific patterns for future dates
+    // Always push generic above_max for future dates
+    detections.push('above_max')
+
+    // Also check medication-specific patterns for future dates
     const medication = allValues.medication ? allValues.medication.toLowerCase().trim() : ''
     if (medication === 'aspirin') {
       detections.push('aspirin_above_max')
@@ -306,13 +314,13 @@ export const dateOfBirthDetector = (value, allValues = {}) => {
 
 // Descriptions for detected patterns
 export const detectionDescriptions = {
+  absolute_minimum: 'Absolute Min',
   invalid_format: 'Wrong format',
   invalid_month: 'Wrong month',
   invalid_day: 'Wrong day',
   invalid_day_for_30day_month: '31 day',
   invalid_february_day: 'Feb 30/31',
   invalid_leap_year_february: 'Leap day',
-  future_date: 'Future',
   below_min: 'Below Lower Boundary',
   boundary_min: 'Lower Boundary',
   boundary_max: 'Upper Boundary',

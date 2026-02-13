@@ -27,6 +27,7 @@ export const badgeSortOrder = [
   'precision_high',
 
   // Range/boundary validations
+  'absolute_minimum',
   'boundary_length_min',
   'below_min',
   'boundary_min',

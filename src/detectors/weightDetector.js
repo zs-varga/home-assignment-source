@@ -58,6 +58,13 @@ export const weightDetector = (value, allValues = {}) => {
     return detections
   }
 
+  const numericValue = parseFloat(trimmedValue)
+
+  // Detect: Absolute minimum (0)
+  if (!isNaN(numericValue) && numericValue === 0) {
+    detections.push('absolute_minimum')
+  }
+
   // Detect: Decimal value
   if (isDecimal(trimmedValue)) {
     detections.push('decimal_value')
@@ -68,8 +75,6 @@ export const weightDetector = (value, allValues = {}) => {
       detections.push('precision_high')
     }
   }
-
-  const numericValue = parseFloat(trimmedValue)
 
   // Detect: Negative value
   if (numericValue < 0) {
@@ -251,6 +256,7 @@ export const weightDetector = (value, allValues = {}) => {
 
 // Descriptions for detected patterns
 export const detectionDescriptions = {
+  absolute_minimum: 'Absolute Min',
   non_numeric: 'Non-numeric',
   negative_value: 'Minus Sign',
   decimal_value: 'Decimal',

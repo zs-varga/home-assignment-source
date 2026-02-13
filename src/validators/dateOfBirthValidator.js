@@ -97,7 +97,7 @@ export const validateDateOfBirth = (value, allValues = {}) => {
     const dateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
     const ageObj = getAge(dateString)
     if (ageObj !== null && (ageObj.years > 150 || (ageObj.years === 150 && (ageObj.months > 0 || ageObj.days > 0)))) {
-      errors.push('Date of Birth must result in a realistic age between 0 and 150 years')
+      errors.push('Date of Birth must result in age between 0 and 150 years')
     }
 
     // Aspirin-specific validation: Children (age < 12) cannot take aspirin

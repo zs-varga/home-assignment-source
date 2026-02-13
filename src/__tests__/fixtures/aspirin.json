@@ -13,11 +13,11 @@
       "dateOfBirth": ["aspirin_below_min"],
       "weight": ["aspirin_below_min"],
       "dosage": ["aspirin_below_min"],
-      "frequency": ["aspirin_below_min"]
+      "frequency": ["absolute_minimum", "aspirin_below_min"]
     },
     "expectedValidationErrors": {
       "medication": [],
-      "dateOfBirth": ["Date of Birth must result in a realistic age between 0 and 150 years"],
+      "dateOfBirth": ["Date of Birth must result in age between 0 and 150 years"],
       "weight": ["Aspirin requires weight greater than 40 kg"],
       "dosage": ["Aspirin dosage must be at least 325 mg"],
       "frequency": ["Frequency must be at least 1"]

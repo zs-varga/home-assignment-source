@@ -35,16 +35,16 @@
     "expectedDetections": {
       "medication": ["boundary_length_min", "invalid_value"],
       "dateOfBirth": ["below_min"],
-      "weight": ["below_min"],
-      "dosage": ["below_min"],
-      "frequency": ["below_min"]
+      "weight": ["absolute_minimum", "below_min"],
+      "dosage": ["absolute_minimum", "below_min"],
+      "frequency": ["absolute_minimum", "below_min"]
     },
     "expectedValidationErrors": {
       "medication": [
         "Medication must be one of: placebo, aspirin, ibuprofen, paracetamol, naproxen"
       ],
       "dateOfBirth": [
-        "Date of Birth must result in a realistic age between 0 and 150 years"
+        "Date of Birth must result in age between 0 and 150 years"
       ],
       "weight": ["Weight must be at least 5"],
       "dosage": ["Dosage must be at least 200"],
@@ -114,7 +114,7 @@
     },
     "expectedDetections": {
       "medication": ["boundary_length_above_max", "invalid_value"],
-      "dateOfBirth": [],
+      "dateOfBirth": ["above_max"],
       "weight": [],
       "dosage": [],
       "frequency": []

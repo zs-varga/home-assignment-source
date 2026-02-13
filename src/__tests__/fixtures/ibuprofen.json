@@ -13,11 +13,11 @@
       "dateOfBirth": ["ibuprofen_below_min"],
       "weight": ["ibuprofen_below_min"],
       "dosage": ["ibuprofen_below_min"],
-      "frequency": ["ibuprofen_below_min"]
+      "frequency": ["absolute_minimum", "ibuprofen_below_min"]
     },
     "expectedValidationErrors": {
       "medication": [],
-      "dateOfBirth": ["Date of Birth must result in a realistic age between 0 and 150 years"],
+      "dateOfBirth": ["Date of Birth must result in age between 0 and 150 years"],
       "weight": [
         "Weight must be at least 5",
         "Ibuprofen requires weight greater than 5 kg"

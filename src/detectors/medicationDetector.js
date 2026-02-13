@@ -19,7 +19,7 @@ export const medicationDetector = (value, _allValues) => {
   const lowerValue = value.toLowerCase().trim();
   const TOTAL_MAX_LENGTH = 100;
 
-  // Detect: Boundary length values
+  // Detect: Boundary length values (minimum length)
   if (value.length === 1) {
     detections.push("boundary_length_min");
   }
@@ -53,6 +53,7 @@ export const medicationDetector = (value, _allValues) => {
 
 // Descriptions for detected patterns
 export const detectionDescriptions = {
+  absolute_minimum: "Absolute Min",
   nominal_value: "Nominal",
   invalid_value: "Invalid",
   boundary_length_min: "Length Min",
