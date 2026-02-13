@@ -88,7 +88,7 @@
     },
     "expectedDetections": {
       "medication": ["boundary_length_max", "invalid_value"],
-      "dateOfBirth": ["boundary_max ", "nominal_value"],
+      "dateOfBirth": ["boundary_max", "nominal_value"],
       "weight": ["boundary_max", "nominal_value"],
       "dosage": ["boundary_max", "nominal_value"],
       "frequency": ["boundary_max", "nominal_value"]
@@ -113,11 +113,11 @@
       "frequency": "6"
     },
     "expectedDetections": {
-      "medication": ["above_max", "invalid_value"],
-      "dateOfBirth": ["above_max"],
-      "weight": ["above_max"],
-      "dosage": ["above_max"],
-      "frequency": ["above_max"]
+      "medication": ["boundary_length_above_max", "invalid_value"],
+      "dateOfBirth": [],
+      "weight": [],
+      "dosage": [],
+      "frequency": []
     },
     "expectedValidationErrors": {
       "medication": [
@@ -212,21 +212,33 @@
       "frequency": ";<script>alert('SELECT')</script>"
     },
     "expectedDetections": {
-      "medication": ["non_alphanumeric", "invalid_value", "above_max", "contains_html", "contains_xss", "contains_sql_injection"],
-      "dateOfBirth": ["non_alphanumeric",  "contains_html", "contains_xss", "contains_sql_injection", "invalid_format"],
-      "weight": ["non_alphanumeric", "contains_html", "contains_xss", "contains_sql_injection", "non_numeric"],
-      "dosage": ["non_alphanumeric", "contains_html", "contains_xss", "contains_sql_injection", "non_numeric"],
-      "frequency": ["non_alphanumeric", "contains_html", "contains_xss", "contains_sql_injection", "non_numeric"]
+      "medication": ["boundary_length_above_max", "non_alphanumeric", "invalid_value", "contains_html", "contains_xss", "contains_sql_injection"],
+      "dateOfBirth": ["boundary_length_above_max", "non_alphanumeric",  "contains_html", "contains_xss", "contains_sql_injection", "invalid_format"],
+      "weight": ["boundary_length_above_max", "non_alphanumeric", "contains_html", "contains_xss", "contains_sql_injection", "non_numeric"],
+      "dosage": ["boundary_length_above_max", "non_alphanumeric", "contains_html", "contains_xss", "contains_sql_injection", "non_numeric"],
+      "frequency": ["boundary_length_above_max", "non_alphanumeric", "contains_html", "contains_xss", "contains_sql_injection", "non_numeric"]
     },
     "expectedValidationErrors": {
       "medication": [
         "Medication must not exceed 20 characters",
         "Medication must be one of: placebo, aspirin, ibuprofen, paracetamol, naproxen"
       ],
-      "dateOfBirth": ["Date of Birth must be in YYYY-MM-DD format"],
-      "weight": ["Weight must be a valid number"],
-      "dosage": ["Dosage must be a valid number"],
-      "frequency": ["Frequency must be a valid number"]
+      "dateOfBirth": [
+        "Date of Birth must not exceed 20 characters",
+        "Date of Birth must be in YYYY-MM-DD format"
+      ],
+      "weight": [
+        "Weight must not exceed 10 characters",
+        "Weight must be a valid number"
+      ],
+      "dosage": [
+        "Dosage must not exceed 10 characters",
+        "Dosage must be a valid number"
+      ],
+      "frequency": [
+        "Frequency must not exceed 10 characters",
+        "Frequency must be a valid number"
+      ]
     }
   },
   {

@@ -34,6 +34,15 @@ function FieldBadges({ fieldName, accomplishments = {}, previousAccomplishments 
   const allDescriptions = { ...fieldDescriptions, ...medicationDescriptions, ...dateOfBirthDescriptions, ...weightDescriptions, ...dosageDescriptions, ...frequencyDescriptions, ...formDescriptions }
 
   const getMedicationFromTag = (tag) => {
+    // Check for nominal_form_* pattern (e.g., nominal_form_aspirin)
+    if (tag.startsWith('nominal_form_')) {
+      const medication = tag.substring('nominal_form_'.length)
+      if (MEDICATIONS.includes(medication) && medication !== 'placebo') {
+        return { medication: medication, pattern: 'nominal_form' }
+      }
+    }
+
+    // Check for medication_* pattern (e.g., aspirin_boundary_max)
     for (const med of MEDICATIONS) {
       if (tag.startsWith(med + '_')) {
         let pattern = tag.substring(med.length + 1)

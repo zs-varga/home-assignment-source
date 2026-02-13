@@ -4,12 +4,18 @@
  */
 export const badgeIcons = {
   // Common across detectors
+  below_min: '⇊',
+  boundary_length_min: '⇩',
+  boundary_min: '↓',
   nominal_value: '✓',
   invalid_value: '✗',
-  boundary_min: '↓',
   boundary_max: '↑',
-  below_min: '⇊',
+  boundary_length_above_max: '⬆',
   above_max: '⇈',
+  boundary_length_max: '⇧',
+  total_above_max: '∑⇈',
+  total_boundary_max: '∑↑',
+  boundary_length_total_max: '∑⬆',
 
   // Numeric issues
   non_numeric: '#',
@@ -40,29 +46,17 @@ export const badgeIcons = {
   contains_html: '⟨⟩',
   contains_xss: 'js',
   contains_sql_injection: ';−',
-  boundary_length_min: '↑',
-  boundary_length_max: '↓',
-  total_boundary_max: '∑↑',
-  total_above_max: '∑⇈',
 
   // Form-level detections
   enter_submit: '⏎',
   nominal_form: '✓',
+  nominal_form_aspirin: '✓',
+  nominal_form_ibuprofen: '✓',
+  nominal_form_paracetamol: '✓',
+  nominal_form_naproxen: '✓',
   storage_tampering: '🔒',
   concurrent_session: '||',
 
   // Fallback
   default: '•'
-}
-
-/**
- * Medication icons for dual-icon badges
- * Used to display medication-specific patterns
- */
-export const medicationIcons = {
-  aspirin: '💊',
-  ibuprofen: '🩹',
-  paracetamol: '🌡️',
-  naproxen: '🧊',
-  placebo: '⭕'
 }

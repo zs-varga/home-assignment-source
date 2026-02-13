@@ -17,19 +17,25 @@ export const medicationDetector = (value, _allValues) => {
   }
 
   const lowerValue = value.toLowerCase().trim();
+  const TOTAL_MAX_LENGTH = 100;
 
   // Detect: Boundary length values
   if (value.length === 1) {
     detections.push("boundary_length_min");
   }
-  // Detect: Boundary length values
+  // Detect: Boundary length values (at max allowed)
   if (value.length === MAX_LENGTH) {
     detections.push("boundary_length_max");
   }
 
-  // Detect: Above max length
-  if (value.length > MAX_LENGTH) {
-    detections.push("above_max");
+  // Detect: Above max length (between max and total max)
+  if (value.length > MAX_LENGTH && value.length < TOTAL_MAX_LENGTH) {
+    detections.push("boundary_length_above_max");
+  }
+
+  // Detect: At total max length
+  if (value.length === TOTAL_MAX_LENGTH) {
+    detections.push("boundary_length_total_max");
   }
 
   // Detect: Nominal value (accepted medication)
@@ -49,7 +55,8 @@ export const medicationDetector = (value, _allValues) => {
 export const detectionDescriptions = {
   nominal_value: "Nominal",
   invalid_value: "Invalid",
-  boundary_length_min: "Min",
-  boundary_length_max: "Max",
-  above_max: "Max+",
+  boundary_length_min: "Length Min",
+  boundary_length_max: "Length Max",
+  boundary_length_above_max: "Length Above Max",
+  boundary_length_total_max: "Length Total Max",
 };

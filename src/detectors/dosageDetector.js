@@ -26,6 +26,23 @@ export const dosageDetector = (value, allValues = {}) => {
   }
 
   const trimmedValue = value.trim()
+  const MAX_LENGTH = 10
+  const TOTAL_MAX_LENGTH = 100
+
+  // Detect: Boundary length values (at max allowed)
+  if (trimmedValue.length === MAX_LENGTH) {
+    detections.push('boundary_length_max')
+  }
+
+  // Detect: Above max length (between max and total max)
+  if (trimmedValue.length > MAX_LENGTH && trimmedValue.length < TOTAL_MAX_LENGTH) {
+    detections.push('boundary_length_above_max')
+  }
+
+  // Detect: At total max length
+  if (trimmedValue.length === TOTAL_MAX_LENGTH) {
+    detections.push('boundary_length_total_max')
+  }
 
   // Detect: Comma as decimal point (wrong decimal separator)
   if (/,/.test(trimmedValue)) {
@@ -255,12 +272,7 @@ export const dosageDetector = (value, allValues = {}) => {
     if (numericValue === MAX_VALUE) {
       detections.push('boundary_max')
     }
-
-    // Detect: Above maximum value
-    if (numericValue > MAX_VALUE) {
-      detections.push('above_max')
-    }
-
+    
     // Detect: Nominal value (within valid range and no other issues)
     if (numericValue >= MIN_VALUE && numericValue <= MAX_VALUE) {
       detections.push('nominal_value')
@@ -296,6 +308,9 @@ export const detectionDescriptions = {
   below_min: 'Below Lower Boundary',
   boundary_min: 'Lower Boundary',
   boundary_max: 'Upper Boundary',
+  boundary_length_max: 'Length Max',
+  boundary_length_above_max: 'Length Above Max',
+  boundary_length_total_max: 'Length Total Max',
   above_max: 'Above Upper Boundary',
   nominal_value: 'Nominal',
   starts_with_plus: '+',

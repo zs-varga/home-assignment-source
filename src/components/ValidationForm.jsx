@@ -203,7 +203,7 @@ function ValidationForm({ accessValidation }) {
     }
 
     // Detect form-level patterns with collected field detections
-    const formDetections = formDetector(e, newAccomplishments)
+    const formDetections = formDetector(e, newAccomplishments, formData)
     let newFormAccomplishments = Array.from(new Set([...formAccomplishments, ...formDetections]))
 
     // Add storage tampering detection if tampering was detected
@@ -271,6 +271,7 @@ function ValidationForm({ accessValidation }) {
               value={formData.medication}
               onChange={handleChange}
               placeholder="Medication name"
+              maxLength="100"
             />
             {fieldErrors.medication && (
               <div className="field-errors">
@@ -293,6 +294,7 @@ function ValidationForm({ accessValidation }) {
               value={formData.dateOfBirth}
               onChange={handleChange}
               placeholder="YYYY-MM-DD"
+              maxLength="100"
             />
             {fieldErrors.dateOfBirth && (
               <div className="field-errors">
@@ -315,6 +317,7 @@ function ValidationForm({ accessValidation }) {
               value={formData.weight}
               onChange={handleChange}
               placeholder="kg"
+              maxLength="100"
             />
             {fieldErrors.weight && (
               <div className="field-errors">
@@ -337,6 +340,7 @@ function ValidationForm({ accessValidation }) {
               value={formData.dosage}
               onChange={handleChange}
               placeholder="mg"
+              maxLength="100"
             />
             {fieldErrors.dosage && (
               <div className="field-errors">
@@ -359,6 +363,7 @@ function ValidationForm({ accessValidation }) {
               value={formData.frequency}
               onChange={handleChange}
               placeholder="daily frequency"
+              maxLength="100"
             />
             {fieldErrors.frequency && (
               <div className="field-errors">

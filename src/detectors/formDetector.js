@@ -1,5 +1,5 @@
 // Detector for form-level testing patterns
-export const formDetector = (submitEvent, fieldDetections = {}) => {
+export const formDetector = (submitEvent, fieldDetections = {}, formData = {}) => {
   const detections = []
 
   // Detect: Form submitted via Enter key
@@ -11,10 +11,13 @@ export const formDetector = (submitEvent, fieldDetections = {}) => {
   }
 
   // Detect: Nominal form (all fields contain nominal_value detection)
-  // Check if all fields have nominal_value detection (can have other detections too)
-  const fieldValues = Object.values(fieldDetections)
-  if (fieldValues.length > 0) {
-    const allHaveNominal = fieldValues.every((fieldDets) => {
+  // All required fields must be present in fieldDetections and have nominal_value
+  const requiredFields = ['medication', 'dateOfBirth', 'weight', 'dosage', 'frequency']
+  const allFieldsPresent = requiredFields.every((field) => field in fieldDetections)
+
+  if (allFieldsPresent) {
+    const allHaveNominal = requiredFields.every((field) => {
+      const fieldDets = fieldDetections[field]
       // Handle both array and non-array values
       const dets = Array.isArray(fieldDets) ? fieldDets : []
       // Field must have nominal_value detection (can have other detections)
@@ -22,6 +25,18 @@ export const formDetector = (submitEvent, fieldDetections = {}) => {
     })
     if (allHaveNominal) {
       detections.push('nominal_form')
+
+      // Detect medication-specific nominal forms
+      const medication = (formData.medication || '').toLowerCase().trim()
+      const medicationSpecificTags = {
+        'aspirin': 'nominal_form_aspirin',
+        'ibuprofen': 'nominal_form_ibuprofen',
+        'paracetamol': 'nominal_form_paracetamol',
+        'naproxen': 'nominal_form_naproxen'
+      }
+      if (medicationSpecificTags[medication]) {
+        detections.push(medicationSpecificTags[medication])
+      }
     }
   }
 
@@ -32,6 +47,10 @@ export const formDetector = (submitEvent, fieldDetections = {}) => {
 export const detectionDescriptions = {
   enter_submit: 'Using Enter',
   nominal_form: 'Nominal',
+  nominal_form_aspirin: 'Aspirin Nominal',
+  nominal_form_ibuprofen: 'Ibuprofen Nominal',
+  nominal_form_paracetamol: 'Paracetamol Nominal',
+  nominal_form_naproxen: 'Naproxen Nominal',
   storage_tampering: 'Storage tampering',
   concurrent_session: 'Concurrent session'
 }

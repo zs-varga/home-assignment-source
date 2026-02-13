@@ -38,12 +38,23 @@ export const validateDateOfBirth = (value, allValues = {}) => {
     return errors
   }
 
-  // Parse date
+  const trimmedValue = value.trim()
+
+  // Length validation
+  if (trimmedValue.length > 20) {
+    errors.push('Date of Birth must not exceed 20 characters')
+  }
+
+  // Parse date (checks YYYY-MM-DD format)
   const dateInfo = parseDate(value)
 
   // Check if date format is valid
   if (!dateInfo.isValid) {
     errors.push('Date of Birth must be in YYYY-MM-DD format')
+  }
+
+  // If there are errors, return now before further validation
+  if (errors.length > 0) {
     return errors
   }
 

@@ -11,7 +11,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #5f5e5e;
   color: white;
   border-radius: 20% 20%;
   font-size: 0.66rem;
@@ -19,29 +19,29 @@
   cursor: help;
   position: relative;
   flex-shrink: 0;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.23rem;
+  height: 1.23rem;
 }
 
 /* Medicine-specific background colors */
 .badge-icon.badge-med-aspirin {
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  background: #7A5555;
 }
 
 .badge-icon.badge-med-ibuprofen {
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  background: #5A7A8A;
 }
 
 .badge-icon.badge-med-paracetamol {
-  background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+  background: #8B6B4A;
 }
 
 .badge-icon.badge-med-naproxen {
-  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+  background: #6B5A7A;
 }
 
 .badge-icon.badge-med-placebo {
-  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+  background: #5A5A5A;
 }
 
 .badge-icon::after {
@@ -89,17 +89,17 @@
 
 @keyframes badgeFlash {
   0% {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #6B6B6B;
     box-shadow: none;
   }
   50% {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #6B6B6B;
     box-shadow:
-      0 0 6px rgba(255, 255, 255, 0.6),
-      inset 0 0 8px rgba(255, 255, 255, 0.3);
+      0 0 6px rgba(0, 0, 0, 0.3),
+      inset 0 0 8px rgba(0, 0, 0, 0.15);
   }
   100% {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #6B6B6B;
     box-shadow: none;
   }
 }

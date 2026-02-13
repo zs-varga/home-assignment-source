@@ -37,6 +37,23 @@ export const dateOfBirthDetector = (value, allValues = {}) => {
   }
 
   const trimmedValue = value.trim()
+  const MAX_LENGTH = 20
+  const TOTAL_MAX_LENGTH = 100
+
+  // Detect: Boundary length values (at max allowed)
+  if (trimmedValue.length === MAX_LENGTH) {
+    detections.push('boundary_length_max')
+  }
+
+  // Detect: Above max length (between max and total max)
+  if (trimmedValue.length > MAX_LENGTH && trimmedValue.length < TOTAL_MAX_LENGTH) {
+    detections.push('boundary_length_above_max')
+  }
+
+  // Detect: At total max length
+  if (trimmedValue.length === TOTAL_MAX_LENGTH) {
+    detections.push('boundary_length_total_max')
+  }
 
   // Detect: Invalid date format
   const datePattern = /^\d{4}-\d{1,2}-\d{1,2}$/
@@ -93,8 +110,6 @@ export const dateOfBirthDetector = (value, allValues = {}) => {
       detections.push('aspirin_above_max')
     } else if (medication === 'ibuprofen') {
       detections.push('ibuprofen_above_max')
-    } else {
-      detections.push('above_max')
     }
     return detections
   }
@@ -301,7 +316,9 @@ export const detectionDescriptions = {
   below_min: 'Below Lower Boundary',
   boundary_min: 'Lower Boundary',
   boundary_max: 'Upper Boundary',
-  above_max: 'Above Upper Boundary',
+  boundary_length_max: 'Length Max',
+  boundary_length_above_max: 'Length Above Max',
+  boundary_length_total_max: 'Length Total Max',
   nominal_value: 'Nominal',
   aspirin_below_min: 'Aspirin Below Lower Boundary',
   aspirin_boundary_min: 'Aspirin Lower Boundary',

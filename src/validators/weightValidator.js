@@ -16,10 +16,19 @@ export const validateWeight = (value, allValues = {}) => {
 
   const trimmedValue = value.trim()
 
+  // Length validation (max 10 characters)
+  if (trimmedValue.length > 10) {
+    errors.push('Weight must not exceed 10 characters')
+  }
+
   // Numeric validation
   const numericValue = parseFloat(trimmedValue)
   if (isNaN(numericValue)) {
     errors.push('Weight must be a valid number')
+  }
+
+  // If there are errors from length or numeric checks, return now
+  if (errors.length > 0) {
     return errors
   }
 

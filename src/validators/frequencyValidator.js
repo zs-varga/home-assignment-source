@@ -17,10 +17,19 @@ export const validateFrequency = (value, allValues = {}) => {
 
   const trimmedValue = value.trim()
 
+  // Length validation (max 10 characters)
+  if (trimmedValue.length > 10) {
+    errors.push('Frequency must not exceed 10 characters')
+  }
+
   // Numeric validation
   const numericValue = parseFloat(trimmedValue)
   if (isNaN(numericValue)) {
     errors.push('Frequency must be a valid number')
+  }
+
+  // If there are errors from length or numeric checks, return now
+  if (errors.length > 0) {
     return errors
   }
 

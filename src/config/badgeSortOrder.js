@@ -27,13 +27,16 @@ export const badgeSortOrder = [
   'precision_high',
 
   // Range/boundary validations
-  'below_min',
   'boundary_length_min',
+  'below_min',
   'boundary_min',
   'nominal_value',
+  'invalid_value',
   'boundary_max',
-  'boundary_length_max',
   'above_max',
+  'boundary_length_max',
+  'boundary_length_above_max',
+  'boundary_length_total_max',
 
   // Date-specific validations
   'invalid_format',
@@ -44,10 +47,8 @@ export const badgeSortOrder = [
   'invalid_day_for_30day_month',
 
   // Value validations
-  'invalid_value',
-
-  'nominal_form',
   'enter_submit',
   'concurrent_session',
   'storage_tampering',
+  'nominal_form',
 ]
