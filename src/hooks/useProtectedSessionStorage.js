@@ -3,9 +3,9 @@ import { createChecksumPackage, extractVerifiedData } from '../utils/checksumUti
 import { deepFreeze } from '../utils/readOnlyState'
 
 /**
- * Custom hook for protected sessionStorage with checksum validation and read-only state
- * @param {string} key - The key to store the value under in sessionStorage
- * @param {any} initialValue - The initial value if nothing is in sessionStorage
+ * Custom hook for protected localStorage with checksum validation and read-only state
+ * @param {string} key - The key to store the value under in localStorage
+ * @param {any} initialValue - The initial value if nothing is in localStorage
  * @returns {[any, Function]} - Returns the read-only state value and a setter function
  */
 export function useProtectedSessionStorage(key, initialValue) {
@@ -16,8 +16,8 @@ export function useProtectedSessionStorage(key, initialValue) {
     }
 
     try {
-      // Get from session storage by key
-      const item = window.sessionStorage.getItem(key)
+      // Get from local storage by key
+      const item = window.localStorage.getItem(key)
 
       if (item) {
         const pkg = JSON.parse(item)
@@ -51,10 +51,10 @@ export function useProtectedSessionStorage(key, initialValue) {
       // Save state
       setStoredValue(frozenValue)
 
-      // Create checksum package and save to session storage
+      // Create checksum package and save to local storage
       if (typeof window !== 'undefined') {
         const pkg = createChecksumPackage(valueToStore)
-        window.sessionStorage.setItem(key, JSON.stringify(pkg))
+        window.localStorage.setItem(key, JSON.stringify(pkg))
       }
     } catch {
       // Silent fail

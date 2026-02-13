@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
 /**
- * Custom hook for persisting state to sessionStorage
- * @param {string} key - The key to store the value under in sessionStorage
- * @param {any} initialValue - The initial value if nothing is in sessionStorage
+ * Custom hook for persisting state to localStorage
+ * @param {string} key - The key to store the value under in localStorage
+ * @param {any} initialValue - The initial value if nothing is in localStorage
  * @returns {[any, Function]} - Returns the state value and a setter function
  */
 export function useSessionStorage(key, initialValue) {
@@ -14,8 +14,8 @@ export function useSessionStorage(key, initialValue) {
     }
 
     try {
-      // Get from session storage by key
-      const item = window.sessionStorage.getItem(key)
+      // Get from local storage by key
+      const item = window.localStorage.getItem(key)
 
       // Parse stored json or return initialValue
       if (item) {
@@ -28,7 +28,7 @@ export function useSessionStorage(key, initialValue) {
   })
 
   // Return a wrapped version of useState's setter function that
-  // persists the new value to sessionStorage
+  // persists the new value to localStorage
   const setValue = (value) => {
     try {
       // Allow value to be a function so we have same API as useState
@@ -37,9 +37,9 @@ export function useSessionStorage(key, initialValue) {
       // Save state
       setStoredValue(valueToStore)
 
-      // Save to session storage
+      // Save to local storage
       if (typeof window !== 'undefined') {
-        window.sessionStorage.setItem(key, JSON.stringify(valueToStore))
+        window.localStorage.setItem(key, JSON.stringify(valueToStore))
       }
     } catch {
       // Silent fail

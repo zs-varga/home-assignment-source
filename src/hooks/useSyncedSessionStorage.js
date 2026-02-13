@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import { extractVerifiedData, createChecksumPackage } from '../utils/checksumUtils'
 
 /**
- * Custom hook for sessionStorage that syncs across tabs
+ * Custom hook for localStorage that syncs across tabs
  * Automatically updates state when other tabs modify the same storage key
- * @param {string} key - The key to store the value under in sessionStorage
- * @param {any} initialValue - The initial value if nothing is in sessionStorage
+ * @param {string} key - The key to store the value under in localStorage
+ * @param {any} initialValue - The initial value if nothing is in localStorage
  * @returns {[any, Function]} - Returns the state value and a setter function
  */
 export function useSyncedSessionStorage(key, initialValue) {

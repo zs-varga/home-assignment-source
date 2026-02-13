@@ -31,6 +31,7 @@ function ValidationForm({ accessValidation }) {
   const [accomplishments, setAccomplishments] = useSyncedSessionStorage('detector_accomplishments', {})
   const [previousAccomplishments, setPreviousAccomplishments] = useSyncedSessionStorage('detector_previous_accomplishments', {})
   const [formAccomplishments, setFormAccomplishments] = useSyncedSessionStorage('detector_form_accomplishments', [])
+  const [lastSubmission, setLastSubmission] = useSyncedSessionStorage('detector_last_submission', null)
   const [storageWasTampered, setStorageWasTampered] = useState(false)
   const [multiWindowDetected, setMultiWindowDetected] = useState(false)
   // Get email from accessValidation (already decoded in App.jsx)
@@ -59,6 +60,7 @@ function ValidationForm({ accessValidation }) {
     const unmonitor1 = monitorStorageKey('detector_accomplishments', 500)
     const unmonitor2 = monitorStorageKey('detector_previous_accomplishments', 500)
     const unmonitor3 = monitorStorageKey('detector_form_accomplishments', 500)
+    const unmonitor4 = monitorStorageKey('detector_last_submission', 500)
 
     // Cleanup function
     return () => {
@@ -66,6 +68,7 @@ function ValidationForm({ accessValidation }) {
       unmonitor1()
       unmonitor2()
       unmonitor3()
+      unmonitor4()
     }
   }, [])
 
@@ -74,7 +77,8 @@ function ValidationForm({ accessValidation }) {
     saveBackup('detector_accomplishments', accomplishments)
     saveBackup('detector_previous_accomplishments', previousAccomplishments)
     saveBackup('detector_form_accomplishments', formAccomplishments)
-  }, [accomplishments, previousAccomplishments, formAccomplishments])
+    saveBackup('detector_last_submission', lastSubmission)
+  }, [accomplishments, previousAccomplishments, formAccomplishments, lastSubmission])
 
   // Autosave: check if enough time has passed since last save
   useEffect(() => {
@@ -219,6 +223,12 @@ function ValidationForm({ accessValidation }) {
     setPreviousAccomplishments(accomplishments)
     setAccomplishments(newAccomplishments)
     setFormAccomplishments(newFormAccomplishments)
+
+    // Save submission metadata (timestamp ensures storage always changes)
+    setLastSubmission({
+      timestamp: new Date().toISOString(),
+      formData: formData
+    })
   }
 
   const handleReset = () => {
@@ -234,6 +244,7 @@ function ValidationForm({ accessValidation }) {
     setAccomplishments({})
     setPreviousAccomplishments({})
     setFormAccomplishments([])
+    setLastSubmission(null)
     setStorageWasTampered(false)
     setMultiWindowDetected(false)
   }

@@ -6,10 +6,10 @@ export const badgeIcons = {
   // Common across detectors
   nominal_value: '✓',
   invalid_value: '✗',
-  boundary_min: '⬇',
-  boundary_max: '⬆',
-  below_min: '⬇−',
-  above_max: '⬆+',
+  boundary_min: '↓',
+  boundary_max: '↑',
+  below_min: '⇊',
+  above_max: '⇈',
 
   // Numeric issues
   non_numeric: '#',
@@ -22,11 +22,11 @@ export const badgeIcons = {
 
   // Date/Format issues
   invalid_format: '📅',
-  invalid_month: '🗓13',
-  invalid_day: '🗓32',
-  invalid_day_for_30day_month: '🗓31',
-  invalid_february_day: '📆30',
-  invalid_leap_year_february: '📆29',
+  invalid_month: '13',
+  invalid_day: '32',
+  invalid_day_for_30day_month: '31',
+  invalid_february_day: '30',
+  invalid_leap_year_february: '29',
   future_date: '⏭',
 
   // Text/Field issues
@@ -38,31 +38,18 @@ export const badgeIcons = {
   non_ascii: '™',
   non_printable: '¶',
   contains_html: '⟨⟩',
-  contains_xss: 'X⚠',
-  contains_sql_injection: 'S⚠',
-  boundary_length_min: '←',
-  boundary_length_max: '→',
-  total_boundary_max: '∑⬆',
-  total_above_max: '∑⬆+',
-
-  // Medication-specific (these use base pattern icons via extraction)
-  aspirin_boundary_max: '⬆',
-  aspirin_above_max: '⬆+',
-  ibuprofen_boundary_max: '⬆',
-  ibuprofen_above_max: '⬆+',
-  ibuprofen_total_boundary_max: '∑⬆',
-  ibuprofen_total_above_max: '∑⬆+',
-
-  paracetamol_boundary_max: '⬆',
-  paracetamol_above_max: '⬆+',
-  paracetamol_total_boundary_max: '∑⬆',
-  paracetamol_total_above_max: '∑⬆+',
+  contains_xss: 'js',
+  contains_sql_injection: ';−',
+  boundary_length_min: '↑',
+  boundary_length_max: '↓',
+  total_boundary_max: '∑↑',
+  total_above_max: '∑⇈',
 
   // Form-level detections
   enter_submit: '⏎',
   nominal_form: '✓',
   storage_tampering: '🔒',
-  concurrent_session: '👥',
+  concurrent_session: '||',
 
   // Fallback
   default: '•'

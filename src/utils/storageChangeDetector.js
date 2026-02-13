@@ -2,7 +2,7 @@ import { extractVerifiedData, createChecksumPackage } from './checksumUtils'
 
 /**
  * Storage change detector
- * Monitors sessionStorage for tampering and integrity violations
+ * Monitors localStorage for tampering and integrity violations
  * Maintains in-memory backups for restoration on tampering
  */
 
@@ -21,11 +21,12 @@ let isRestoringFromTampering = false
 // Sync callbacks (called when storage data should be synced to React state)
 const syncCallbacks = {}
 
-// In-memory backups (not persisted to sessionStorage, safe from tampering)
+// In-memory backups (not persisted to localStorage, safe from tampering)
 const backups = {
   detector_accomplishments: null,
   detector_previous_accomplishments: null,
-  detector_form_accomplishments: null
+  detector_form_accomplishments: null,
+  detector_last_submission: null
 }
 
 /**
@@ -85,7 +86,7 @@ function callSyncCallback(key, data) {
 
 /**
  * Check if storage already contains data (indicates other tabs/windows may be open)
- * Returns true if any accomplishment data is found in sessionStorage
+ * Returns true if any accomplishment data is found in localStorage
  * @returns {boolean} - True if storage has existing data
  */
 export function hasExistingStorageData() {
@@ -106,7 +107,7 @@ export function hasExistingStorageData() {
 }
 
 /**
- * Validate a specific key in sessionStorage
+ * Validate a specific key in localStorage
  * @param {string} key - The storage key to validate
  * @returns {object} - { isValid: boolean, data: any, tampered: boolean }
  */
@@ -115,6 +116,11 @@ export function validateStorageKey(key) {
     const item = window.localStorage.getItem(key)
 
     if (!item) {
+      // If key is missing but we have a backup, it was deleted (tampering)
+      const backup = restoreFromBackup(key)
+      if (backup !== null) {
+        return { isValid: false, data: null, tampered: true }
+      }
       return { isValid: true, data: null, tampered: false }
     }
 
@@ -132,7 +138,7 @@ export function validateStorageKey(key) {
 }
 
 /**
- * Validate all accomplishment keys in sessionStorage
+ * Validate all accomplishment keys in localStorage
  * @returns {object} - { allValid: boolean, results: {key: validation} }
  */
 export function validateAllAccomplishments() {
@@ -157,7 +163,7 @@ export function validateAllAccomplishments() {
 
 /**
  * Initialize storage change detection using the 'storage' event
- * This fires when sessionStorage/localStorage is modified in OTHER tabs/windows
+ * This fires when localStorage is modified in OTHER tabs/windows
  * To detect changes in the SAME tab, we need to monitor direct modifications
  */
 export function initializeStorageChangeDetection() {
@@ -170,7 +176,8 @@ export function initializeStorageChangeDetection() {
     if (
       event.key === 'detector_accomplishments' ||
       event.key === 'detector_previous_accomplishments' ||
-      event.key === 'detector_form_accomplishments'
+      event.key === 'detector_form_accomplishments' ||
+      event.key === 'detector_last_submission'
     ) {
       const validation = validateStorageKey(event.key)
 
@@ -227,7 +234,10 @@ function notifyListeners(key, data, isValid) {
  */
 export function saveBackup(key, data) {
   if (Object.prototype.hasOwnProperty.call(backups, key)) {
-    backups[key] = data
+    // Never overwrite a non-null backup with null (prevents loss of backup on deletion)
+    if (data !== null || backups[key] === null) {
+      backups[key] = data
+    }
   }
 }
 
@@ -272,7 +282,7 @@ export function monitorStorageKey(key, interval = 1000) {
             if (tamperingCallback) {
               tamperingCallback()
             }
-            // Restore the backup to sessionStorage
+            // Restore the backup to localStorage
             try {
               isRestoringFromTampering = true
               const pkg = createChecksumPackage(backupData)

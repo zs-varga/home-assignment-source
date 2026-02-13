@@ -1,5 +1,6 @@
 import './Badges.css'
 import { badgeIcons } from '../config/badgeIcons'
+import { badgeSortOrder } from '../config/badgeSortOrder'
 import { detectionDescriptions as medicationDescriptions } from '../detectors/medicationDetector'
 import { detectionDescriptions as dateOfBirthDescriptions } from '../detectors/dateOfBirthDetector'
 import { detectionDescriptions as weightDescriptions } from '../detectors/weightDetector'
@@ -44,8 +45,13 @@ function FieldBadges({ fieldName, accomplishments = {}, previousAccomplishments 
     return null
   }
 
-  // Sort badges: non-medicine first, then by medicine order, alphabetically within groups
+  // Sort badges: non-medicine first, then by medicine order, using badgeSortOrder for consistency
   const medicineOrder = ['placebo', 'aspirin', 'ibuprofen', 'paracetamol', 'naproxen']
+
+  const getPatternSortIndex = (pattern) => {
+    const index = badgeSortOrder.indexOf(pattern)
+    return index === -1 ? badgeSortOrder.length : index // Unknown patterns go to the end
+  }
 
   const sortedAccomplishments = [...fieldAccomplishments].sort((a, b) => {
     const aMed = getMedicationFromTag(a)
@@ -57,8 +63,10 @@ function FieldBadges({ fieldName, accomplishments = {}, previousAccomplishments 
 
     // Both are medicine or both are non-medicine
     if (!aMed && !bMed) {
-      // Sort alphabetically within non-medicine group
-      return a.localeCompare(b)
+      // Sort by badgeSortOrder
+      const aSortIndex = getPatternSortIndex(a)
+      const bSortIndex = getPatternSortIndex(b)
+      return aSortIndex - bSortIndex
     }
 
     // Both are medicine-specific
@@ -68,8 +76,10 @@ function FieldBadges({ fieldName, accomplishments = {}, previousAccomplishments 
     // First sort by medicine order
     if (aIndex !== bIndex) return aIndex - bIndex
 
-    // Then sort alphabetically within same medicine
-    return a.localeCompare(b)
+    // Then sort by badgeSortOrder for the pattern within same medicine
+    const aSortIndex = getPatternSortIndex(aMed.pattern)
+    const bSortIndex = getPatternSortIndex(bMed.pattern)
+    return aSortIndex - bSortIndex
   })
 
   return (
