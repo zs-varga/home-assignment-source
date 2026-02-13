@@ -66,7 +66,7 @@ export const validationRules = {
       message: 'Frequency must not exceed 5'
     },
     aspirin: {
-      maxValue: 'Aspirin frequency for adults must not exceed 4'
+      maxValue: 'Aspirin frequency must not exceed 4'
     },
     ibuprofen: {
       maxValue: 'Ibuprofen frequency must not exceed 4'

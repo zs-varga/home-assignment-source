@@ -115,7 +115,7 @@
         "Dosage must not exceed 1000",
         "Aspirin dosage must not exceed 1000 mg"
       ],
-      "frequency": []
+      "frequency": ["Aspirin frequency must not exceed 4"]
     }
   }
 ]

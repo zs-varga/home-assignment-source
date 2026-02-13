@@ -52,13 +52,9 @@ export const validateFrequency = (value, allValues = {}) => {
   // Aspirin-specific validations
   const medication = allValues.medication ? allValues.medication.toLowerCase().trim() : ''
   if (medication === 'aspirin') {
-    const age = getAge(allValues.dateOfBirth)
-
     // For aspirin, frequency must be <= 4
-    if (age !== null && age.years > 12) {
-      if (numericValue > 4) {
-        errors.push(validationRules.frequency.aspirin.maxValue)
-      }
+    if (numericValue > 4) {
+      errors.push(validationRules.frequency.aspirin.maxValue)
     }
   }
 
