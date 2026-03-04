@@ -21,22 +21,14 @@ export const validateFrequency = (value, allValues = {}) => {
     errors.push(validationRules.frequency.maxLength.message)
   }
 
-  // Numeric validation
-  const numericValue = parseFloat(trimmedValue)
-  if (isNaN(numericValue)) {
+  // Numeric validation - strict format (integers only, optional +/- sign)
+  const isValidInteger = /^[+-]?\d+$/.test(trimmedValue)
+  if (!isValidInteger) {
     errors.push(validationRules.frequency.invalidNumber.message)
-  }
-
-  // If there are errors from length or numeric checks, return now
-  if (errors.length > 0) {
     return errors
   }
 
-  // Decimal validation (frequency must be integer only)
-  if (hasDecimalPoint(trimmedValue)) {
-    errors.push(validationRules.frequency.notInteger.message)
-    return errors
-  }
+  const numericValue = parseFloat(trimmedValue)
 
   // Min value validation (min 1)
   if (numericValue < 1) {

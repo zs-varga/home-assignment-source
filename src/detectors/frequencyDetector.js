@@ -52,9 +52,11 @@ export const frequencyDetector = (value, allValues = {}) => {
     detections.push('multiple_decimals')
   }
 
-  // Detect: Non-numeric value
-  if (isNaN(parseFloat(trimmedValue))) {
+  // Detect: Non-numeric value (strict format: integers only, optional +/- sign)
+  const isValidInteger = /^[+-]?\d+$/.test(trimmedValue)
+  if (!isValidInteger) {
     detections.push('non_numeric')
+    return detections
   }
 
   const numericValue = parseFloat(trimmedValue)

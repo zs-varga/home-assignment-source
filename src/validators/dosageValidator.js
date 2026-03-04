@@ -21,16 +21,14 @@ export const validateDosage = (value, allValues = {}) => {
     errors.push(validationRules.dosage.maxLength.message)
   }
 
-  // Numeric validation
-  const numericValue = parseFloat(trimmedValue)
-  if (isNaN(numericValue)) {
+  // Numeric validation - strict format (optional +/- sign, digits, optional decimal)
+  const isValidNumber = /^[+-]?\d+(\.\d+)?$/.test(trimmedValue)
+  if (!isValidNumber) {
     errors.push(validationRules.dosage.invalidNumber.message)
-  }
-
-  // If there are errors from length or numeric checks, return now
-  if (errors.length > 0) {
     return errors
   }
+
+  const numericValue = parseFloat(trimmedValue)
 
   // Decimal validation (dosage accepts decimal values with dot as decimal point)
   if (!hasDecimalPoint(trimmedValue)) {

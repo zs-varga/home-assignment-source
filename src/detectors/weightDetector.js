@@ -52,8 +52,9 @@ export const weightDetector = (value, allValues = {}) => {
     detections.push('multiple_decimals')
   }
 
-  // Detect: Non-numeric value
-  if (isNaN(parseFloat(trimmedValue))) {
+  // Detect: Non-numeric value (strict format: optional +/- sign, digits, optional decimal)
+  const isValidNumber = /^[+-]?\d+(\.\d+)?$/.test(trimmedValue)
+  if (!isValidNumber) {
     detections.push('non_numeric')
     return detections
   }
