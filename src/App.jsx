@@ -99,21 +99,18 @@ function App() {
       }
     }
 
-    // If token exists, set up interval to check when access expires
+    // If token exists, set up interval to check when access expires or starts
     if (token) {
       try {
         const decoded = decodeAccessToken(token)
 
-        // Check every 5 seconds if access has expired (instead of every second)
+        // Check every 5 seconds if access status changed
         const interval = setInterval(() => {
           const validation = validateAccessWindow(decoded.iso8601DateTime, decoded.duration)
-          // Only update state if access status changed (expired)
-          if (!validation.isValid) {
-            setAccessValidation({
-              ...validation,
-              email: decoded.email
-            })
-          }
+          setAccessValidation({
+            ...validation,
+            email: decoded.email
+          })
         }, 5000)
 
         return () => clearInterval(interval)
