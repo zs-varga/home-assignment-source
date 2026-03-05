@@ -10,7 +10,7 @@ const TOKEN_VERSION = '1'
  * @param {string} email - Candidate email
  * @param {string} date - Date in YYYY-MM-DD format (interpreted as CET)
  * @param {string} time - Time in HH:MM format (interpreted as CET)
- * @param {string} duration - Duration (e.g., "3h", "2h", "4h")
+ * @param {string} duration - Duration (e.g., "3h", "30m", "1h30m")
  * @returns {string} Encoded token
  */
 export function encodeAccessToken(email, date, time, duration) {
@@ -89,7 +89,7 @@ export function decodeAccessToken(token) {
 /**
  * Validates if current time is within the access window
  * @param {string} iso8601DateTime - ISO 8601 datetime with timezone offset (e.g., "2026-01-13T08:00:00+01:00")
- * @param {string} duration - Duration (e.g., "3h", "2h")
+ * @param {string} duration - Duration (e.g., "3h", "30m", "1h30m")
  * @returns {Object} {isValid: boolean, message: string, timeRemaining: number}
  */
 export function validateAccessWindow(iso8601DateTime, duration) {
@@ -106,18 +106,20 @@ export function validateAccessWindow(iso8601DateTime, duration) {
       }
     }
 
-    // Parse duration (e.g., "3h" -> 3 hours)
-    const durationMatch = duration.match(/^(\d+)h$/)
-    if (!durationMatch) {
+    // Parse duration (e.g., "3h", "30m", "1h30m")
+    const durationMatch = duration.match(/^(?:(\d+)h)?(?:(\d+)m)?$/)
+    if (!durationMatch || (!durationMatch[1] && !durationMatch[2])) {
       return {
         isValid: false,
-        message: 'Invalid duration format (use format like "3h")',
+        message: 'Invalid duration format (use formats like "3h", "30m", or "1h30m")',
         timeRemaining: 0
       }
     }
 
-    const durationHours = parseInt(durationMatch[1], 10)
-    const endDateTime = new Date(startDateTime.getTime() + durationHours * 60 * 60 * 1000)
+    const hours = durationMatch[1] ? parseInt(durationMatch[1], 10) : 0
+    const minutes = durationMatch[2] ? parseInt(durationMatch[2], 10) : 0
+    const totalMilliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000)
+    const endDateTime = new Date(startDateTime.getTime() + totalMilliseconds)
 
     // Check current time (in UTC)
     const now = new Date()
@@ -181,7 +183,7 @@ function generateChecksum(data) {
  * @param {string} email - Candidate email
  * @param {string} date - Date in YYYY-MM-DD format
  * @param {string} time - Time in HH:MM format
- * @param {string} duration - Duration (e.g., "3h")
+ * @param {string} duration - Duration (e.g., "3h", "30m", "1h30m")
  * @returns {string} Full URL with encoded token
  */
 export function generateAccessLink(baseUrl, email, date, time, duration) {
@@ -196,7 +198,7 @@ export function generateAccessLink(baseUrl, email, date, time, duration) {
  * @param {string} email - Candidate email
  * @param {string} date - Date in YYYY-MM-DD format
  * @param {string} time - Time in HH:MM format
- * @param {string} duration - Duration (e.g., "3h")
+ * @param {string} duration - Duration (e.g., "3h", "30m", "1h30m")
  * @returns {string} Full URL with unencoded parameters
  */
 export function generateTemporaryAccessUrl(baseUrl, email, date, time, duration) {
