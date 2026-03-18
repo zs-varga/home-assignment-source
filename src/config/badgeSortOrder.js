@@ -52,5 +52,6 @@ export const badgeSortOrder = [
   'enter_submit',
   'concurrent_session',
   'storage_tampering',
+  'responsive_design',
   'nominal_form',
 ]

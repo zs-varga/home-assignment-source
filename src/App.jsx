@@ -220,7 +220,7 @@ function App() {
         <>
           <h1>QA Home Assignment</h1>
           <p>This assignment is no longer available.</p>
-          <p>You have achieved {badgeCount} / 209</p>
+          <p>You have achieved {badgeCount} / 210 score.</p>
         </>
       )
     }

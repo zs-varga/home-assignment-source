@@ -52,5 +52,6 @@ export const detectionDescriptions = {
   nominal_form_paracetamol: 'Paracetamol Nominal',
   nominal_form_naproxen: 'Naproxen Nominal',
   storage_tampering: 'Storage tampering',
-  concurrent_session: 'Concurrent session'
+  concurrent_session: 'Concurrent session',
+  responsive_design: 'Responsive design'
 }

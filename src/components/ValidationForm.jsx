@@ -40,6 +40,9 @@ function ValidationForm({ accessValidation, onBadgeCountChange }) {
   const lastAutosaveTime = useRef(0)
   // Track last saved accomplishments to avoid saving unchanged data
   const lastSavedAccomplishments = useRef(null)
+  // Track responsive design state transitions
+  const initialIsMobile = useRef(window.innerWidth <= 480)
+  const responsiveDesignTriggered = useRef(false)
 
   // Set up storage change detection and monitoring
   useEffect(() => {
@@ -62,6 +65,17 @@ function ValidationForm({ accessValidation, onBadgeCountChange }) {
     const unmonitor3 = monitorStorageKey('detector_form_accomplishments', 500)
     const unmonitor4 = monitorStorageKey('detector_last_submission', 500)
 
+    // Detect responsive design state transitions (mobile <= 480px vs desktop)
+    const handleResize = () => {
+      if (!responsiveDesignTriggered.current) {
+        const currentIsMobile = window.innerWidth <= 480
+        if (currentIsMobile !== initialIsMobile.current) {
+          responsiveDesignTriggered.current = true
+        }
+      }
+    }
+    window.addEventListener('resize', handleResize)
+
     // Cleanup function
     return () => {
       unsubscribe()
@@ -69,6 +83,7 @@ function ValidationForm({ accessValidation, onBadgeCountChange }) {
       unmonitor2()
       unmonitor3()
       unmonitor4()
+      window.removeEventListener('resize', handleResize)
     }
   }, [])
 
@@ -223,6 +238,11 @@ function ValidationForm({ accessValidation, onBadgeCountChange }) {
     if (multiWindowDetected) {
       newFormAccomplishments = Array.from(new Set([...newFormAccomplishments, 'concurrent_session']))
       setMultiWindowDetected(false) // Reset the flag after adding detection
+    }
+
+    // Add responsive design detection if a mobile/desktop transition was detected
+    if (responsiveDesignTriggered.current) {
+      newFormAccomplishments = Array.from(new Set([...newFormAccomplishments, 'responsive_design']))
     }
 
     setFieldErrors(errors)

@@ -57,6 +57,7 @@ export const badgeIcons = {
   nominal_form_naproxen: '✓',
   storage_tampering: '🔒',
   concurrent_session: '||',
+  responsive_design: '◱',
 
   // Fallback
   default: '•'
