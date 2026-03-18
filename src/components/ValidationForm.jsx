@@ -17,7 +17,7 @@ import { fieldDetector } from '../detectors/fieldDetector'
 import { formDetector } from '../detectors/formDetector'
 import { submitAccomplishmentsToGoogleForms } from '../utils/googleFormsSubmission'
 
-function ValidationForm({ accessValidation }) {
+function ValidationForm({ accessValidation, onBadgeCountChange }) {
   const [formData, setFormData] = useState({
     medication: '',
     dateOfBirth: '',
@@ -79,6 +79,13 @@ function ValidationForm({ accessValidation }) {
     saveBackup('detector_form_accomplishments', formAccomplishments)
     saveBackup('detector_last_submission', lastSubmission)
   }, [accomplishments, previousAccomplishments, formAccomplishments, lastSubmission])
+
+  // Notify parent of badge count changes
+  useEffect(() => {
+    if (!onBadgeCountChange) return
+    const count = Object.values(accomplishments).reduce((sum, arr) => sum + arr.length, 0) + formAccomplishments.length
+    onBadgeCountChange(count)
+  }, [accomplishments, formAccomplishments, onBadgeCountChange])
 
   // Autosave: check if enough time has passed since last save
   useEffect(() => {

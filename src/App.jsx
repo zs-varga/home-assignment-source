@@ -3,8 +3,20 @@ import { useState, useEffect } from 'react'
 import ValidationForm from './components/ValidationForm'
 import Timer from './components/Timer'
 import { encodeAccessToken, decodeAccessToken, validateAccessWindow } from './utils/accessTokenManager'
+import { extractVerifiedData } from './utils/checksumUtils'
+
+const readBadgeCountFromStorage = () => {
+  try {
+    const accomplishments = extractVerifiedData(JSON.parse(localStorage.getItem('detector_accomplishments'))) || {}
+    const formAccomplishments = extractVerifiedData(JSON.parse(localStorage.getItem('detector_form_accomplishments'))) || []
+    return Object.values(accomplishments).reduce((sum, arr) => sum + arr.length, 0) + formAccomplishments.length
+  } catch {
+    return 0
+  }
+}
 
 function App() {
+  const [badgeCount, setBadgeCount] = useState(readBadgeCountFromStorage)
   const [accessValidation, setAccessValidation] = useState(() => {
     let token = null
 
@@ -208,6 +220,7 @@ function App() {
         <>
           <h1>QA Home Assignment</h1>
           <p>This assignment is no longer available.</p>
+          <p>You have achieved {badgeCount} / 209</p>
         </>
       )
     }
@@ -231,7 +244,7 @@ function App() {
       </header>
       {isAccessValid && (
         <main className="app-main">
-          <ValidationForm accessValidation={accessValidation} />
+          <ValidationForm accessValidation={accessValidation} onBadgeCountChange={setBadgeCount} />
         </main>
       )}
     </div>

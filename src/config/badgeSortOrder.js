@@ -16,6 +16,7 @@ export const badgeSortOrder = [
   'non_alphanumeric',
   'non_ascii',
   'non_printable',
+  'contains_uppercase',
 
   // Numeric/decimal validations
   'non_numeric',
