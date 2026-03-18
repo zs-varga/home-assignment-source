@@ -52,6 +52,17 @@ export const frequencyDetector = (value, allValues = {}) => {
     detections.push('multiple_decimals')
   }
 
+  // Detect: Decimal value (frequency must be integer only)
+  if (isDecimal(trimmedValue)) {
+    detections.push('decimal_value')
+
+    // Detect: Decimal precision too high (more than 3 decimal places)
+    const decimalPart = trimmedValue.split('.')[1]
+    if (decimalPart && decimalPart.length > 3) {
+      detections.push('precision_high')
+    }
+  }
+
   // Detect: Non-numeric value (strict format: integers only, optional +/- sign)
   const isValidInteger = /^[+-]?\d+$/.test(trimmedValue)
   if (!isValidInteger) {
@@ -64,17 +75,6 @@ export const frequencyDetector = (value, allValues = {}) => {
   // Detect: Absolute minimum (0)
   if (!isNaN(numericValue) && numericValue === 0) {
     detections.push('absolute_minimum')
-  }
-
-  // Detect: Decimal value (frequency must be integer only)
-  if (isDecimal(trimmedValue)) {
-    detections.push('decimal_value')
-
-    // Detect: Decimal precision too high (more than 3 decimal places)
-    const decimalPart = trimmedValue.split('.')[1]
-    if (decimalPart && decimalPart.length > 3) {
-      detections.push('precision_high')
-    }
   }
 
   // Detect: Negative value
