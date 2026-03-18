@@ -33,6 +33,11 @@ export const medicationDetector = (value, _allValues) => {
     detections.push("boundary_length_total_max");
   }
 
+  // Detect: Contains uppercase letters
+  if (/[A-Z]/.test(value)) {
+    detections.push("contains_uppercase");
+  }
+
   // Detect: Nominal value (accepted medication)
   if (lowerValue !== "" && ACCEPTED_MEDICATIONS.includes(lowerValue)) {
     detections.push("nominal_value");
@@ -49,6 +54,7 @@ export const medicationDetector = (value, _allValues) => {
 // Descriptions for detected patterns
 export const detectionDescriptions = {
   absolute_minimum: "Absolute Min",
+  contains_uppercase: "Contains uppercase",
   nominal_value: "Nominal",
   invalid_value: "Invalid",
   boundary_length_min: "Length Min",

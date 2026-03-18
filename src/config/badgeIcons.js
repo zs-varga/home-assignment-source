@@ -46,6 +46,7 @@ export const badgeIcons = {
   contains_html: '⟨⟩',
   contains_xss: 'js',
   contains_sql_injection: ';−',
+  contains_uppercase: 'A',
 
   // Form-level detections
   enter_submit: '⏎',

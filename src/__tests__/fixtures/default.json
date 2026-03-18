@@ -212,7 +212,7 @@
       "frequency": ";<script>alert('SELECT')</script>"
     },
     "expectedDetections": {
-      "medication": ["boundary_length_above_max", "non_alphanumeric", "invalid_value", "contains_html", "contains_xss", "contains_sql_injection"],
+      "medication": ["boundary_length_above_max", "non_alphanumeric", "invalid_value", "contains_html", "contains_xss", "contains_sql_injection", "contains_uppercase"],
       "dateOfBirth": ["boundary_length_above_max", "non_alphanumeric",  "contains_html", "contains_xss", "contains_sql_injection", "invalid_format"],
       "weight": ["boundary_length_above_max", "non_alphanumeric", "contains_html", "contains_xss", "contains_sql_injection", "non_numeric"],
       "dosage": ["boundary_length_above_max", "non_alphanumeric", "contains_html", "contains_xss", "contains_sql_injection", "non_numeric"],

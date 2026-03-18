@@ -55,8 +55,8 @@ export const fieldDetector = (value, _allValues) => {
     detections.push('contains_xss')
   }
 
-  // Detect: SQL injection (contains SQL keywords followed by space or common SQL patterns)
-  if (/;[\s]*(DROP|DELETE|INSERT|UPDATE|SELECT|UNION|ALTER|CREATE|EXEC|EXECUTE)\b/i.test(value) || /^[\s]*;/i.test(value)) {
+  // Detect: SQL injection (contains SQL keywords)
+  if (/\b(DROP|DELETE|INSERT|UPDATE|SELECT|UNION|ALTER|CREATE|EXEC|EXECUTE|TRUNCATE|GRANT|REVOKE)\b/i.test(value)) {
     detections.push('contains_sql_injection')
   }
 
