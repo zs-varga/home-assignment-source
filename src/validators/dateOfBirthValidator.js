@@ -88,7 +88,7 @@ export const validateDateOfBirth = (value, allValues = {}) => {
     }
 
     // Validate: Age must be realistic (0-150)
-    const dateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    const dateString = `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
     const ageObj = getAge(dateString)
     if (ageObj !== null && (ageObj.years > 150 || (ageObj.years === 150 && (ageObj.months > 0 || ageObj.days > 0)))) {
       errors.push(validationRules.dateOfBirth.invalidAge.message)

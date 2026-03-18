@@ -22,7 +22,7 @@ export const getAge = (dateOfBirthString) => {
 
   // Calculate age
   const today = new Date()
-  const birthDate = new Date(year, month - 1, day)
+  const birthDate = new Date(`${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`)
 
   // Check if date is in the future
   if (birthDate > today) {

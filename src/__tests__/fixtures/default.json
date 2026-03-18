@@ -242,6 +242,30 @@
     }
   },
   {
+    "name": "Absolute Minimum Date (0000-01-01)",
+    "values": {
+      "medication": "placebo",
+      "dateOfBirth": "0000-01-01",
+      "weight": "70",
+      "dosage": "500",
+      "frequency": "2"
+    },
+    "expectedDetections": {
+      "medication": ["nominal_value"],
+      "dateOfBirth": ["absolute_minimum", "below_min"],
+      "weight": ["nominal_value"],
+      "dosage": ["nominal_value"],
+      "frequency": ["nominal_value"]
+    },
+    "expectedValidationErrors": {
+      "medication": [],
+      "dateOfBirth": ["Date of Birth must result in age between 0 and 150 years"],
+      "weight": [],
+      "dosage": [],
+      "frequency": []
+    }
+  },
+  {
     "name": "Plus signs",
     "values": {
       "medication": "placebo",
