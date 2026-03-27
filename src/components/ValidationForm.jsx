@@ -34,8 +34,8 @@ function ValidationForm({ accessValidation, onBadgeCountChange }) {
   const [lastSubmission, setLastSubmission] = useSyncedSessionStorage('detector_last_submission', null)
   const [storageWasTampered, setStorageWasTampered] = useState(false)
   const [multiWindowDetected, setMultiWindowDetected] = useState(false)
-  // Get email from accessValidation (already decoded in App.jsx)
   const candidateEmail = accessValidation?.email || null
+  const candidateName = accessValidation?.name || null
   // Track last autosave time to avoid recreating intervals
   const lastAutosaveTime = useRef(0)
   // Track last saved accomplishments to avoid saving unchanged data
@@ -129,12 +129,12 @@ function ValidationForm({ accessValidation, onBadgeCountChange }) {
     if (timeSinceLastSave >= saveIntervalMs && accomplishmentsChanged) {
       lastAutosaveTime.current = now
       lastSavedAccomplishments.current = currentAccomplishmentsStr
-      submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail)
+      submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail, candidateName)
     }
 
     // If access window has expired, do a final save (regardless of changes)
     if (accessValidation.timeRemainingSeconds !== undefined && accessValidation.timeRemainingSeconds <= 0) {
-      submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail)
+      submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail, candidateName)
     }
   }, [accessValidation, accomplishments, formAccomplishments, candidateEmail])
 
@@ -277,7 +277,7 @@ function ValidationForm({ accessValidation, onBadgeCountChange }) {
   }
 
   const handleSave = () => {
-    submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail)
+    submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, candidateEmail, candidateName)
   }
 
   return (

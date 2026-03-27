@@ -1,9 +1,5 @@
 import { validationRules } from '../config/validationRules'
 
-// Helper function to check if a value contains a decimal point
-const hasDecimalPoint = (valueString) => {
-  return /\./.test(valueString)
-}
 
 export const validateFrequency = (value, allValues = {}) => {
   const errors = []

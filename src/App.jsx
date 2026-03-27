@@ -2,8 +2,11 @@ import './App.css'
 import { useState, useEffect } from 'react'
 import ValidationForm from './components/ValidationForm'
 import Timer from './components/Timer'
+import StartForm from './components/StartForm'
 import { encodeAccessToken, decodeAccessToken, validateAccessWindow } from './utils/accessTokenManager'
 import { extractVerifiedData } from './utils/checksumUtils'
+
+const STORAGE_KEY = 'session'
 
 const readBadgeCountFromStorage = () => {
   try {
@@ -18,8 +21,6 @@ const readBadgeCountFromStorage = () => {
 function App() {
   const [badgeCount, setBadgeCount] = useState(readBadgeCountFromStorage)
   const [accessValidation, setAccessValidation] = useState(() => {
-    let token = null
-
     // Check for unencoded parameters first
     const params = new URLSearchParams(window.location.search)
     const email = params.get('email')
@@ -29,102 +30,98 @@ function App() {
 
     // If unencoded parameters exist, don't process token yet (useEffect will handle redirect)
     if (email && date && time && duration) {
-      return {
-        isValid: false,
-        message: 'Invalid token',
-        timeRemaining: 0,
-        status: 'invalid'
-      }
+      return { isValid: false, message: '', timeRemaining: 0, status: 'redirecting' }
     }
-
-    // Only accept raw query string as token (no parameter names like key=value)
-    const search = window.location.search.substring(1) // Remove leading ?
-    // Check if this looks like parameter format by checking for known parameter names
-    const knownParams = ['email', 'date', 'time', 'duration', 'token']
-    const hasKnownParam = knownParams.some(param => search.startsWith(param + '='))
-
-    if (search && !hasKnownParam) {
-      token = search
-    }
-
-    if (token) {
-      try {
-        const decoded = decodeAccessToken(token)
-        const validation = validateAccessWindow(decoded.iso8601DateTime, decoded.duration)
-        if (!validation.isValid && !validation.message.includes('not yet available') && !validation.message.includes('expired')) {
-          return {
-            isValid: false,
-            message: 'Invalid token',
-            timeRemaining: 0,
-            status: 'invalid'
-          }
-        }
-        return {
-          ...validation,
-          email: decoded.email
-        }
-      } catch {
-        return {
-          isValid: false,
-          message: 'Invalid token',
-          timeRemaining: 0,
-          status: 'invalid'
-        }
-      }
-    }
-    return {
-      isValid: false,
-      message: 'Invalid token',
-      timeRemaining: 0,
-      status: 'invalid'
-    }
-  })
-
-  // Handle access token redirect and check when access expires
-  useEffect(() => {
-    let token = null
 
     // Only accept raw query string as token (no parameter names like key=value)
     const search = window.location.search.substring(1)
-    const knownParams = ['email', 'date', 'time', 'duration', 'token']
+    const knownParams = ['email', 'name', 'date', 'time', 'duration', 'token']
     const hasKnownParam = knownParams.some(param => search.startsWith(param + '='))
 
     if (search && !hasKnownParam) {
-      token = search
+      // There is a raw token in the URL
+      try {
+        const decoded = decodeAccessToken(search)
+        const validation = validateAccessWindow(decoded.iso8601DateTime, decoded.duration)
+        if (!validation.isValid && !validation.message.includes('not yet available') && !validation.message.includes('expired')) {
+          // Malformed / bad checksum — redirect to base URL
+          return { isValid: false, message: '', timeRemaining: 0, status: 'redirect_to_base' }
+        }
+        return { ...validation, email: decoded.email, name: decoded.name }
+      } catch {
+        return { isValid: false, message: '', timeRemaining: 0, status: 'redirect_to_base' }
+      }
     }
 
+    // No URL params — check localStorage
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const { token } = JSON.parse(stored)
+        const decoded = decodeAccessToken(token)
+        const validation = validateAccessWindow(decoded.iso8601DateTime, decoded.duration)
+        if (validation.isValid) {
+          return { isValid: false, message: '', timeRemaining: 0, status: 'redirect_to_stored', token }
+        }
+        if (validation.message.includes('expired')) {
+          return { isValid: false, message: 'Access window has expired', timeRemaining: 0 }
+        }
+      }
+    } catch {
+      // Corrupted storage — fall through to start form
+    }
+
+    return { isValid: false, message: '', timeRemaining: 0, status: 'start_form' }
+  })
+
+  // Handle redirects and periodic access window checks
+  useEffect(() => {
+    const basePath = window.location.pathname.endsWith('/')
+      ? window.location.pathname
+      : `${window.location.pathname}/`
+
+    // Redirect to base URL for invalid tokens
+    if (accessValidation.status === 'redirect_to_base') {
+      window.location.href = basePath
+      return
+    }
+
+    // Redirect to stored valid token
+    if (accessValidation.status === 'redirect_to_stored') {
+      window.location.href = `${basePath}?${accessValidation.token}`
+      return
+    }
+
+    // Handle unencoded parameters — encode and redirect
     const params = new URLSearchParams(window.location.search)
     const email = params.get('email')
+    const name = params.get('name')
     const date = params.get('date')
     const time = params.get('time')
     const duration = params.get('duration')
 
-    // If unencoded parameters exist, encode and redirect to raw query format
-    if (email && date && time && duration && !token) {
+    if (email && date && time && duration) {
       try {
-        const encodedToken = encodeAccessToken(email, date, time, duration)
-        const currentPath = window.location.pathname.endsWith('/') ? window.location.pathname : `${window.location.pathname}/`
-        window.location.href = `${currentPath}?${encodedToken}`
+        const encodedToken = encodeAccessToken(email, name || '', date, time, duration)
+        window.location.href = `${basePath}?${encodedToken}`
         return
       } catch {
         // Silent fail
       }
     }
 
-    // If token exists, set up interval to check when access expires or starts
-    if (token) {
-      try {
-        const decoded = decodeAccessToken(token)
+    // If a raw token is in the URL, set up interval to recheck access window
+    const search = window.location.search.substring(1)
+    const knownParams = ['email', 'name', 'date', 'time', 'duration', 'token']
+    const hasKnownParam = knownParams.some(param => search.startsWith(param + '='))
 
-        // Check every 5 seconds if access status changed
+    if (search && !hasKnownParam) {
+      try {
+        const decoded = decodeAccessToken(search)
         const interval = setInterval(() => {
           const validation = validateAccessWindow(decoded.iso8601DateTime, decoded.duration)
-          setAccessValidation({
-            ...validation,
-            email: decoded.email
-          })
+          setAccessValidation({ ...validation, email: decoded.email, name: decoded.name })
         }, 5000)
-
         return () => clearInterval(interval)
       } catch {
         // Silent fail
@@ -134,32 +131,19 @@ function App() {
 
 
   const getAccessStatus = () => {
-    if (accessValidation.status === 'invalid') {
-      return 'invalid'
-    }
+    if (accessValidation.status === 'start_form') return 'start_form'
+    if (accessValidation.status === 'redirect_to_base') return 'redirecting'
+    if (accessValidation.status === 'redirect_to_stored') return 'redirecting'
+    if (accessValidation.status === 'redirecting') return 'redirecting'
 
-    if (accessValidation.message.includes('not yet available')) {
-      return 'early'
-    }
+    if (accessValidation.message && accessValidation.message.includes('not yet available')) return 'early'
+    if (accessValidation.message && accessValidation.message.includes('expired')) return 'late'
 
-    if (accessValidation.message.includes('expired')) {
-      return 'late'
-    }
-
-    return accessValidation.isValid ? 'valid' : 'invalid'
+    return accessValidation.isValid ? 'valid' : 'start_form'
   }
 
   const getHeaderContent = () => {
     const status = getAccessStatus()
-
-    if (status === 'invalid') {
-      return (
-        <>
-          <h1>QA Home Assignment</h1>
-          <p>This assignment is not available. Check your link.</p>
-        </>
-      )
-    }
 
     if (status === 'early' && accessValidation) {
       const match = accessValidation.message.match(/Starts in (\d+) minute\(s\)\./)
@@ -236,6 +220,14 @@ function App() {
 
   const status = getAccessStatus()
   const isAccessValid = status === 'valid'
+
+  if (status === 'start_form') {
+    return (
+      <div className="app-container">
+        <StartForm />
+      </div>
+    )
+  }
 
   return (
     <div className="app-container">

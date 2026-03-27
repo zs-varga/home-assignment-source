@@ -8,14 +8,15 @@ const TOKEN_VERSION = '1'
 /**
  * Encodes candidate access parameters into a token
  * @param {string} email - Candidate email
+ * @param {string} name - Candidate name
  * @param {string} date - Date in YYYY-MM-DD format (interpreted as CET)
  * @param {string} time - Time in HH:MM format (interpreted as CET)
  * @param {string} duration - Duration (e.g., "3h", "30m", "1h30m")
  * @returns {string} Encoded token
  */
-export function encodeAccessToken(email, date, time, duration) {
-  if (!email || !date || !time || !duration) {
-    throw new Error('All parameters (email, date, time, duration) are required')
+export function encodeAccessToken(email, name, date, time, duration) {
+  if (!email || !name || !date || !time || !duration) {
+    throw new Error('All parameters (email, name, date, time, duration) are required')
   }
 
   // Normalize time format (support both "8:00" and "08:00")
@@ -26,7 +27,7 @@ export function encodeAccessToken(email, date, time, duration) {
   const iso8601DateTime = `${date}T${normalizedTime}:00+01:00`
 
   // Create data string with pipe separators
-  const data = `${email}|${iso8601DateTime}|${duration}`
+  const data = `${email}|${name}|${iso8601DateTime}|${duration}`
 
   // Generate checksum before encoding
   const checksum = generateChecksum(data)
@@ -68,19 +69,19 @@ export function decodeAccessToken(token) {
       throw new Error(`Token checksum validation failed (got ${checksumSection}, expected ${expectedChecksum})`)
     }
 
-    // Now parse the data - email|iso8601DateTime|duration
+    // Now parse the data - email|name|iso8601DateTime|duration
     const parts = data.split('|')
-    if (parts.length !== 3) {
+    if (parts.length !== 4) {
       throw new Error('Invalid token format')
     }
 
-    const [email, iso8601DateTime, duration] = parts
+    const [email, name, iso8601DateTime, duration] = parts
 
-    if (!email || !iso8601DateTime || !duration) {
+    if (!email || !name || !iso8601DateTime || !duration) {
       throw new Error('Invalid token format')
     }
 
-    return { email, iso8601DateTime, duration }
+    return { email, name, iso8601DateTime, duration }
   } catch (error) {
     throw new Error(`Failed to decode token: ${error.message}`)
   }
@@ -186,8 +187,8 @@ function generateChecksum(data) {
  * @param {string} duration - Duration (e.g., "3h", "30m", "1h30m")
  * @returns {string} Full URL with encoded token
  */
-export function generateAccessLink(baseUrl, email, date, time, duration) {
-  const token = encodeAccessToken(email, date, time, duration)
+export function generateAccessLink(baseUrl, email, name, date, time, duration) {
+  const token = encodeAccessToken(email, name, date, time, duration)
   return `${baseUrl}?token=${token}`
 }
 
@@ -201,9 +202,10 @@ export function generateAccessLink(baseUrl, email, date, time, duration) {
  * @param {string} duration - Duration (e.g., "3h", "30m", "1h30m")
  * @returns {string} Full URL with unencoded parameters
  */
-export function generateTemporaryAccessUrl(baseUrl, email, date, time, duration) {
+export function generateTemporaryAccessUrl(baseUrl, email, name, date, time, duration) {
   const params = new URLSearchParams({
     email,
+    name,
     date,
     time,
     duration

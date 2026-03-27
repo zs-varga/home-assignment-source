@@ -8,7 +8,8 @@ const GOOGLE_FORM_CONFIG = {
   formId: '1FAIpQLSdftQ_NX3wxloFBc62lAZxwpWWaWpu0uTUKncGFwSRimfBG7w',
   endpoint: 'https://docs.google.com/forms/d/e/1FAIpQLSdftQ_NX3wxloFBc62lAZxwpWWaWpu0uTUKncGFwSRimfBG7w/formResponse',
   accomplishmentsFieldId: 'entry.2076330911',
-  emailFieldId: 'emailAddress'
+  emailFieldId: 'emailAddress',
+  nameFieldId: 'entry.1910202129'
 }
 
 /**
@@ -47,16 +48,19 @@ export function formatAccomplishmentsForSubmission(accomplishments, formAccompli
  * @param {string} email - Optional email address for tracking responses
  * @returns {Promise<void>}
  */
-export async function submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, email = '') {
+export async function submitAccomplishmentsToGoogleForms(accomplishments, formAccomplishments, email = '', name = '') {
   try {
     const formattedAccomplishments = formatAccomplishmentsForSubmission(accomplishments, formAccomplishments)
 
     const formData = new FormData()
     formData.append(GOOGLE_FORM_CONFIG.accomplishmentsFieldId, formattedAccomplishments)
 
-    // Include email if provided (helps with tracking and updating responses)
     if (email) {
       formData.append(GOOGLE_FORM_CONFIG.emailFieldId, email)
+    }
+
+    if (name) {
+      formData.append(GOOGLE_FORM_CONFIG.nameFieldId, name)
     }
 
     await fetch(GOOGLE_FORM_CONFIG.endpoint, {
