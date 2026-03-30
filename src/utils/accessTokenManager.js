@@ -23,8 +23,9 @@ export function encodeAccessToken(email, name, date, time, duration) {
   const timeParts = time.split(':')
   const normalizedTime = timeParts.map(part => part.padStart(2, '0')).join(':')
 
-  // Create ISO 8601 datetime with CET offset (+01:00)
-  const iso8601DateTime = `${date}T${normalizedTime}:00+01:00`
+  // Create ISO 8601 datetime with the local UTC offset (DST-aware)
+  const offset = getLocalUTCOffset(date, normalizedTime)
+  const iso8601DateTime = `${date}T${normalizedTime}:00${offset}`
 
   // Create data string with pipe separators
   const data = `${email}|${name}|${iso8601DateTime}|${duration}`
@@ -159,6 +160,23 @@ export function validateAccessWindow(iso8601DateTime, duration) {
       timeRemaining: 0
     }
   }
+}
+
+/**
+ * Returns the local UTC offset string for the given date and time.
+ * Uses the browser's own timezone, so DST is handled automatically.
+ * @param {string} dateStr - Date in YYYY-MM-DD format
+ * @param {string} timeStr - Time in HH:MM format
+ * @returns {string} e.g. '+02:00', '-05:00'
+ */
+function getLocalUTCOffset(dateStr, timeStr) {
+  const date = new Date(`${dateStr}T${timeStr}:00`)
+  const totalMinutes = -date.getTimezoneOffset()
+  const sign = totalMinutes >= 0 ? '+' : '-'
+  const absMinutes = Math.abs(totalMinutes)
+  const h = String(Math.floor(absMinutes / 60)).padStart(2, '0')
+  const m = String(absMinutes % 60).padStart(2, '0')
+  return `${sign}${h}:${m}`
 }
 
 /**
